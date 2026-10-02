@@ -108,6 +108,14 @@ los componentes para cambiar textos.
 | Proyectos | `proyectos` |
 | Correo, GitHub, LinkedIn | `contacto` |
 
+### Botones de redes sociales del hero
+
+Debajo de la foto de portada hay botones circulares con los logos de WhatsApp,
+Instagram, LinkedIn, Discord y Gmail. Los botones externos abren en una pestaña
+nueva; Gmail abre el cliente de correo. Los enlaces de LinkedIn y Gmail se toman
+de `contacto` en `src/data/perfil.ts`. Para cambiar WhatsApp, Instagram o Discord,
+edita la constante `redes` de `src/components/Hero.astro`.
+
 ### ⚠ Antes de publicar, revisa esto
 
 1. `stack` — **un logo es una afirmación.** Quita las tecnologías que no
