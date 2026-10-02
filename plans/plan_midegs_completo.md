@@ -72,6 +72,26 @@ sitio listo para publicar.
   Figma y Canva. Python ya estaba y se mantiene. La lista pasó de 38 a 37, sin
   huecos: todo lo que aparece tiene logo. Los SVG de Word y Excel se borraron
   por quedar sin uso.
+- **D13 — Hero con carrusel y galería de credenciales (2026-10-02):** cambios de
+  presentación hechos por el usuario y verificados antes de subirlos.
+  - *Carrusel del hero*: tres fotos (`foto1.jpeg`, `foto2.jpeg`, `foto3.png`)
+    que rotan cada 15 s, con `object-position` distinto por foto
+    (`.photo--1/2/3`) para encuadrar cada una. Botón de pausa. Solo se activa
+    si hay más de una foto y `prefers-reduced-motion` no está activo. La
+    primera foto lleva `fetchpriority="high"` y `BaseLayout` la precarga.
+  - *Galería de credenciales* en el bloque del SENA: dos "huecos" con icono
+    SVG en línea que indican dónde irá cada foto
+    (`public/img/diploma-tecnico.jpg` y `public/img/entrega-diploma.jpg`).
+    Son marcadores, no imágenes: no generan 404. Rotan cada 5 s, con botón de
+    pausa y flecha. Se añade el proyecto final del SENA, **Finovateh**.
+  - *Línea de tiempo*: la línea de la trayectoria se rellena según el scroll
+    mediante la variable CSS `--timeline-progress`, actualizada con
+    `requestAnimationFrame` (no en cada evento de scroll).
+  - El cartel "Disponible para trabajar" pasa a flotar sobre la foto, con
+    entrada propia (`placard-enter`) en lugar de ir inclinado sobre el nombre.
+  - **Pendiente**: `public/img/foto.jpg` (255 KB) quedó sin uso al pasar a
+    `foto1.jpeg`. No se borra sin autorización del usuario, que es una
+    fotografía original.
 - **D6 — CSS:** un único archivo, `src/styles/global.css`. Los `.astro` no
   llevan estilos dentro.
 - **D7 — Imagen pendiente:** `public/cv.pdf` es un archivo binario. La IA lo

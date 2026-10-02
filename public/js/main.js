@@ -56,7 +56,139 @@
     });
   }
 
-  /* --- 3. Compensación del header fijo al navegar por anclas --- */
+  /* --- 3. Cambio automático de fotografías del perfil --- */
+  var photoFrame = document.querySelector('[data-photo-frame]');
+
+  if (photoFrame) {
+    var photoToggle = photoFrame.querySelector('[data-photo-toggle]');
+    var photos = Array.prototype.slice.call(photoFrame.querySelectorAll('.photo'));
+
+    if (photoToggle && photos.length > 1 && !reduceMotion) {
+      var photoToggleLabel = photoToggle.querySelector('[data-photo-toggle-label]');
+      var photoToggleIcon = photoToggle.querySelector('.photo-toggle__icon');
+      var activePhoto = 0;
+      var photosPaused = false;
+
+      photoToggle.hidden = false;
+
+      window.setInterval(function () {
+        if (photosPaused) return;
+
+        photos[activePhoto].classList.remove('is-active');
+        activePhoto = (activePhoto + 1) % photos.length;
+        photos[activePhoto].classList.add('is-active');
+      }, 15000);
+
+      photoToggle.addEventListener('click', function () {
+        photosPaused = !photosPaused;
+        photoToggle.setAttribute('aria-pressed', photosPaused ? 'true' : 'false');
+
+        if (photoToggleLabel) {
+          photoToggleLabel.textContent = photosPaused ? 'Reanudar fotos' : 'Pausar fotos';
+        }
+        if (photoToggleIcon) photoToggleIcon.textContent = photosPaused ? '▶' : '❚❚';
+      });
+    }
+  }
+
+  /* --- 4. Fotos del diploma y su entrega --- */
+  var credentialGallery = document.querySelector('[data-credential-gallery]');
+
+  if (credentialGallery) {
+    var credentialSlides = Array.prototype.slice.call(
+      credentialGallery.querySelectorAll('[data-credential-slide]')
+    );
+    var credentialStatus = credentialGallery.querySelector('[data-credential-status]');
+    var credentialToggle = credentialGallery.querySelector('[data-credential-toggle]');
+    var credentialToggleLabel = credentialGallery.querySelector(
+      '[data-credential-toggle-label]'
+    );
+    var credentialNext = credentialGallery.querySelector('[data-credential-next]');
+
+    if (credentialSlides.length > 1 && credentialToggle && credentialNext) {
+      var activeCredential = 0;
+      var credentialPaused = false;
+      var credentialTimer;
+
+      var showCredential = function (index) {
+        credentialSlides[activeCredential].classList.remove('is-active');
+        credentialSlides[activeCredential].setAttribute('aria-hidden', 'true');
+        activeCredential = index % credentialSlides.length;
+        credentialSlides[activeCredential].classList.add('is-active');
+        credentialSlides[activeCredential].setAttribute('aria-hidden', 'false');
+
+        if (credentialStatus) {
+          credentialStatus.textContent = String(activeCredential + 1).padStart(2, '0');
+        }
+      };
+
+      var scheduleCredentialAdvance = function () {
+        window.clearTimeout(credentialTimer);
+        credentialGallery.classList.remove('is-playing');
+
+        if (reduceMotion || credentialPaused) return;
+
+        void credentialGallery.offsetWidth;
+        credentialGallery.classList.add('is-playing');
+        credentialTimer = window.setTimeout(function () {
+          showCredential(activeCredential + 1);
+          scheduleCredentialAdvance();
+        }, 5000);
+      };
+
+      credentialNext.addEventListener('click', function () {
+        showCredential(activeCredential + 1);
+        scheduleCredentialAdvance();
+      });
+
+      credentialToggle.addEventListener('click', function () {
+        credentialPaused = !credentialPaused;
+        credentialToggle.setAttribute(
+          'aria-pressed',
+          credentialPaused ? 'true' : 'false'
+        );
+
+        if (credentialToggleLabel) {
+          credentialToggleLabel.textContent = credentialPaused ? 'Reanudar' : 'Pausar';
+        }
+
+        scheduleCredentialAdvance();
+      });
+
+      if (reduceMotion) {
+        credentialToggle.hidden = true;
+      } else {
+        scheduleCredentialAdvance();
+      }
+    }
+  }
+
+  /* --- 5. Progreso visual de la línea de trayectoria --- */
+  var timeline = document.querySelector('[data-timeline]');
+
+  if (timeline && !reduceMotion) {
+    var timelineFrame = 0;
+
+    var updateTimelineProgress = function () {
+      timelineFrame = 0;
+      var bounds = timeline.getBoundingClientRect();
+      var marker = window.innerHeight * 0.58;
+      var progress = (marker - bounds.top) / bounds.height;
+      progress = Math.max(0, Math.min(1, progress));
+      timeline.style.setProperty('--timeline-progress', String(progress));
+    };
+
+    var requestTimelineUpdate = function () {
+      if (timelineFrame) return;
+      timelineFrame = window.requestAnimationFrame(updateTimelineProgress);
+    };
+
+    window.addEventListener('scroll', requestTimelineUpdate, { passive: true });
+    window.addEventListener('resize', requestTimelineUpdate);
+    requestTimelineUpdate();
+  }
+
+  /* --- 6. Compensación del header fijo al navegar por anclas --- */
   var header = document.querySelector('.site-header');
 
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {

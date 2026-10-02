@@ -291,6 +291,87 @@ a:hover {
   margin-bottom: 3rem;
 }
 
+#trayectoria {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block-start: calc(clamp(4rem, 9vw, 7.5rem) - 1cm - 15px);
+}
+
+#trayectoria::before,
+#trayectoria::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  pointer-events: none;
+}
+
+#trayectoria::before {
+  inset: 0;
+  opacity: 0.34;
+  background-image:
+    radial-gradient(3px 3px at 8% 18%, var(--accent), transparent 75%),
+    radial-gradient(2.5px 2.5px at 18% 62%, var(--white), transparent 75%),
+    radial-gradient(4px 4px at 29% 34%, var(--accent), transparent 75%),
+    radial-gradient(2.5px 2.5px at 43% 78%, var(--white), transparent 75%),
+    radial-gradient(3px 3px at 57% 21%, var(--accent), transparent 75%),
+    radial-gradient(2.5px 2.5px at 69% 57%, var(--white), transparent 75%),
+    radial-gradient(4px 4px at 82% 29%, var(--accent), transparent 75%),
+    radial-gradient(2.5px 2.5px at 94% 72%, var(--white), transparent 75%);
+  animation: trajectory-stars 4.5s ease-in-out infinite alternate;
+}
+
+#trayectoria::after {
+  top: 12%;
+  right: -9rem;
+  width: 8rem;
+  height: 1px;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, var(--white) 65%, var(--accent));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent);
+  transform: rotate(-32deg);
+  transform-origin: right center;
+  animation: trajectory-shooting-star 9s ease-in infinite 1.5s;
+}
+
+@keyframes trajectory-stars {
+  from {
+    opacity: 0.18;
+  }
+  to {
+    opacity: 0.48;
+  }
+}
+
+@keyframes trajectory-shooting-star {
+  0%,
+  72%,
+  100% {
+    opacity: 0;
+    translate: 0 0;
+  }
+  75% {
+    opacity: 0.85;
+  }
+  84% {
+    opacity: 0;
+    translate: -70vw 38vh;
+  }
+}
+
+#trayectoria > .container {
+  position: relative;
+  z-index: 1;
+}
+
+#trayectoria .section__head {
+  margin-bottom: calc(3rem - 0.3cm);
+}
+
+#trayectoria .section__head .eyebrow {
+  margin-bottom: 0.75rem;
+}
+
 .section__title {
   font-size: clamp(1.9rem, 4.5vw, 3rem);
   margin-bottom: 0.35rem;
@@ -333,6 +414,20 @@ a:hover {
   letter-spacing: 0.4px;
   padding: 0.25rem 0.6rem;
   white-space: nowrap;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+@media (hover: hover) {
+  #trayectoria .tag:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 13%, var(--bg));
+    color: var(--accent);
+  }
 }
 
 /* --- Botones ---
@@ -568,6 +663,19 @@ a:hover {
 
    El nombre es el elemento más grande porque es lo primero que alguien
    necesita saber: quién es. La frase viene después, en segundo plano. */
+.hero-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-bottom: 1.5rem;
+}
+
+.hero-kicker .eyebrow {
+  margin-bottom: 0;
+}
+
 .hero-heading {
   position: relative;
   margin-bottom: 18px;
@@ -594,39 +702,36 @@ a:hover {
   }
 }
 
-/* --- El cartel "Disponible para trabajar" ---
-   Va inclinado sobre el borde inferior del nombre, al estilo del
-   "+ Demais" del diseño de referencia. */
+/* --- Estado de disponibilidad junto al antetítulo --- */
 .hero-placard {
   position: absolute;
-  right: 0;
-  bottom: -18px;
-  z-index: 2;
+  top: -2.5cm;
+  right: 10px;
+  z-index: 5;
   display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  padding: 9px 13px 9px 11px;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--ink-black) 92%, var(--night-bordeaux));
-  transform: rotate(-2.5deg);
-  animation: hero-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+  align-items: center;
+  gap: 12px;
+  padding: calc(12px + 0.25cm) calc(17px + 0.25cm);
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg));
+  animation: placard-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
 }
 
-/* La cruz que precede al texto, como en el cartel de referencia */
-.hero-placard::before {
-  content: '+';
-  color: var(--accent-2);
-  font-family: var(--mono);
-  font-weight: 900;
-  font-size: 13px;
-  line-height: 1.1;
+@keyframes placard-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Punto de estado: late despacio para señalar que está disponible */
+/* El punto palpitante refuerza el estado sin competir con el titular. */
 .hero-placard-dot {
-  width: 7px;
-  height: 7px;
-  margin-top: 3px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--accent);
   flex: none;
@@ -640,18 +745,17 @@ a:hover {
   }
   70%,
   100% {
-    box-shadow: 0 0 0 9px transparent;
+    box-shadow: 0 0 0 6px transparent;
   }
 }
 
 .hero-placard-text {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--white);
+  line-height: 1.2;
+  letter-spacing: 0.4px;
+  color: var(--accent);
 }
 
 .hero-tagline {
@@ -731,8 +835,8 @@ a:hover {
 /* Coordenadas: absolute para flotar sobre la esquina de la foto */
 .hero-coords {
   position: absolute;
-  top: 4px;
-  left: 7px;
+  top: calc(4px - 1cm);
+  left: calc(7px - 0.5cm);
   z-index: 3;
   color: var(--accent);
   font-family: var(--mono);
@@ -755,11 +859,71 @@ a:hover {
 }
 
 .photo {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 16px 0 0 15px;
+  z-index: 1;
+  width: calc(100% - 15px);
+  height: calc(100% - 16px);
+  display: block;
   object-fit: cover;
   object-position: center;
   filter: saturate(0.88);
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.photo.is-active {
+  opacity: 1;
+}
+
+.photo--1 {
+  object-position: 50% 48%;
+}
+
+.photo--2 {
+  object-position: 50% 125%;
+}
+
+.photo--3 {
+  object-position: 40% 20%;
+}
+
+.photo-toggle {
+  position: absolute;
+  top: 1.25rem;
+  right: 1rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.photo-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-2);
+}
+
+.photo-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.photo-toggle[hidden] {
+  display: none;
+}
+
+.photo-toggle__icon {
+  color: var(--accent-2);
+  font-size: 9px;
 }
 
 .photo-caption {
@@ -767,6 +931,7 @@ a:hover {
   left: 15px;
   right: 0;
   bottom: 0;
+  z-index: 2;
   height: 52px;
   display: flex;
   align-items: center;
@@ -778,6 +943,11 @@ a:hover {
      Con 10 px no se leía en pantallas de portátil. */
   font-size: 11px;
   letter-spacing: 0.6px;
+}
+
+.photo-images {
+  position: absolute;
+  inset: 0;
 }
 
 .hero-badge {
@@ -815,24 +985,12 @@ a:hover {
   .photo-frame {
     width: min(530px, 90vw);
   }
+
 }
 
 @media (max-width: 700px) {
   .hero-name {
     letter-spacing: -1.5px;
-  }
-
-  /* El cartel deja de flotar y entra en el flujo: en pantallas
-     estrechas un absoluto se salía de la columna. */
-  .hero-heading {
-    margin-bottom: 20px;
-  }
-
-  .hero-placard {
-    position: static;
-    transform: none;
-    width: fit-content;
-    margin-top: 14px;
   }
 
   .hero-description {
@@ -849,14 +1007,20 @@ a:hover {
     padding: 10px 0 0 10px;
   }
 
+  .photo {
+    inset: 10px 0 0 10px;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+  }
+
   .photo-caption {
     left: 10px;
     height: 45px;
   }
 
   .hero-coords {
-    left: -2px;
-    top: -3px;
+    left: calc(-2px - 0.5cm);
+    top: calc(-3px - 1cm);
   }
 
   .hero-badge {
@@ -866,16 +1030,6 @@ a:hover {
     height: 65px;
   }
 
-  /* La entrada del nombre y el latido del cartel cuentan como animación:
-     sin ellas no hay nada que hacer y el sitio se ve estático. */
-  .hero-name,
-  .hero-placard {
-    animation: none;
-  }
-
-  .hero-placard-dot {
-    animation: none;
-  }
 }
 
 
@@ -901,25 +1055,85 @@ a:hover {
    USADO POR: Trayectoria.astro.
    ============================================================ */
 .exp-list {
+  position: relative;
+  isolation: isolate;
   list-style: none;
   display: grid;
   gap: 3rem;
+}
+
+.exp-list::before,
+.exp-list::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  content: '';
+  pointer-events: none;
+}
+
+.exp-list::before {
+  background: var(--line);
+}
+
+.exp-list::after {
+  background: linear-gradient(var(--accent), var(--accent-2));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 42%, transparent);
+  transform: scaleY(var(--timeline-progress, 0));
+  transform-origin: top;
+  transition: transform 120ms linear;
 }
 
 .exp-item {
   display: grid;
   grid-template-columns: 10rem 1fr;
   gap: 0.5rem 2rem;
-  border-left: 2px solid var(--line);
   padding-left: 1.75rem;
 }
 
+.exp-item--technician {
+  grid-template-columns: 9rem minmax(0, 1fr) minmax(14rem, 0.78fr);
+  align-items: start;
+}
+
 .exp-period {
+  position: relative;
+  width: fit-content;
   font-family: var(--mono);
   font-size: 12px;
   color: var(--accent);
   letter-spacing: 0.5px;
   padding-top: 0.35rem;
+  transition:
+    color 220ms ease,
+    transform 220ms ease,
+    text-shadow 220ms ease;
+}
+
+.exp-period::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.3rem;
+  left: 0;
+  height: 1px;
+  content: '';
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms ease;
+}
+
+@media (hover: hover) {
+  .exp-item:hover .exp-period {
+    color: var(--white);
+    transform: translateX(4px);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .exp-item:hover .exp-period::after {
+    transform: scaleX(1);
+  }
 }
 
 .exp-detail h3 {
@@ -938,14 +1152,323 @@ a:hover {
   max-width: 62ch;
 }
 
+.exp-project {
+  display: grid;
+  gap: 0.2rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 1rem 0 1.1rem;
+  padding: 0.65rem 0.9rem;
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg));
+  transition:
+    transform 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+@media (hover: hover) {
+  .exp-project:hover {
+    transform: translateY(-4px);
+    background: color-mix(in srgb, var(--accent) 11%, var(--bg));
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+}
+
+.exp-project__label {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.55px;
+  text-transform: uppercase;
+}
+
+.exp-project__name {
+  color: var(--white);
+  font-size: 1rem;
+  transition: color 220ms ease;
+}
+
+@media (hover: hover) {
+  .exp-project:hover .exp-project__name {
+    color: var(--accent);
+  }
+}
+
 .exp-achievements {
   margin: 0 0 1.1rem;
-  padding-left: 1.1rem;
+  padding-left: 0;
+  list-style: none;
   color: var(--muted);
 }
 
 .exp-achievements li {
+  position: relative;
+  padding-left: 1.1rem;
   margin-bottom: 0.3rem;
+  transition:
+    color 200ms ease,
+    transform 200ms ease;
+}
+
+.exp-achievements li::before {
+  position: absolute;
+  top: 0.7em;
+  left: 0.15rem;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  content: '';
+  background: var(--accent-2);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 35%, transparent);
+  transition:
+    background-color 200ms ease,
+    box-shadow 240ms ease,
+    transform 200ms ease;
+}
+
+@media (hover: hover) {
+  .exp-achievements li:hover {
+    color: var(--white);
+    transform: translateX(4px);
+  }
+
+  .exp-achievements li:hover::before {
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+    transform: scale(1.15);
+  }
+}
+
+/* Marco para las fotos del diploma y el momento de la entrega. */
+.credential-gallery {
+  position: relative;
+  min-width: 0;
+  transform: translateY(-15px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line));
+  background: var(--bg-raise);
+}
+
+.credential-gallery::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 2px;
+  content: '';
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 48%, transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.credential-gallery.is-playing::after {
+  animation: credential-progress 5s linear both;
+}
+
+@keyframes credential-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.credential-gallery__slides {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1.18;
+  background:
+    radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 58%),
+    var(--bg);
+}
+
+.credential-slide {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 0;
+  margin: 0;
+  padding: 0.9rem 1rem 0.8rem;
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  pointer-events: none;
+}
+
+.credential-slide.is-active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.credential-slide.is-active .credential-slot__icon {
+  animation: credential-icon-enter 500ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes credential-icon-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.78) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+.credential-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 0;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.credential-slot__index {
+  position: absolute;
+  top: 0.1rem;
+  right: 0;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.credential-slot__icon {
+  width: 54px;
+  height: 54px;
+  padding: 13px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+  border-radius: 50%;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg));
+}
+
+.credential-slot__title {
+  color: var(--white);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.credential-slot__path {
+  max-width: 100%;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+.credential-caption,
+.credential-gallery__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+}
+
+.credential-caption {
+  color: var(--muted);
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--line);
+}
+
+.credential-caption span:last-child {
+  color: var(--accent);
+}
+
+.credential-gallery__controls {
+  margin-top: 0;
+  min-height: 2.9rem;
+  padding: 0 0.8rem;
+  border-top: 1px solid var(--line);
+}
+
+.credential-gallery__status {
+  display: inline-flex;
+  gap: 0.3rem;
+  color: var(--accent);
+}
+
+.credential-gallery__status span:last-child {
+  color: var(--dim);
+}
+
+.credential-gallery__toggle,
+.credential-gallery__next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 1.9rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.credential-gallery__toggle:hover,
+.credential-gallery__next:hover {
+  color: var(--accent);
+  border-color: var(--accent-2);
+}
+
+.credential-gallery__toggle:focus-visible,
+.credential-gallery__next:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.credential-gallery__next {
+  width: 2rem;
+  padding-inline: 0;
+  color: var(--accent);
+  font-size: 15px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exp-list::after {
+    opacity: 0.5;
+    transform: scaleY(1);
+    transition: none;
+  }
+
+  #trayectoria .tag,
+  .exp-period,
+  .exp-period::after,
+  .exp-achievements li,
+  .exp-achievements li::before,
+  .credential-slide,
+  .credential-slide .credential-slot__icon {
+    animation: none;
+    transition: none;
+  }
+
+  .credential-gallery::after {
+    display: none;
+  }
+}
+
+@media (max-width: 780px) {
+  .exp-item--technician {
+    grid-template-columns: 8rem minmax(0, 1fr);
+  }
+
+  .credential-gallery {
+    grid-column: 2;
+    width: min(100%, 23rem);
+  }
 }
 
 @media (max-width: 700px) {
@@ -953,6 +1476,11 @@ a:hover {
     grid-template-columns: 1fr;
     gap: 0.6rem;
     padding-left: 1.1rem;
+  }
+
+  .credential-gallery {
+    grid-column: 1;
+    width: min(100%, 23rem);
   }
 }
 
@@ -1132,6 +1660,16 @@ a:hover {
 
 /* --- Sin movimiento: fila estática y desplazable --- */
 @media (prefers-reduced-motion: reduce) {
+  #trayectoria::before {
+    animation: none;
+    opacity: 0.24;
+  }
+
+  #trayectoria::after {
+    display: none;
+    animation: none;
+  }
+
   .marquee {
     overflow-x: auto;
     mask-image: none;
@@ -1140,6 +1678,10 @@ a:hover {
 
   .marquee__track {
     animation: none;
+  }
+
+  .photo {
+    transition: none;
   }
 }
 

@@ -34,19 +34,24 @@ public/                       Hero → Stack → Trayectoria → Proyectos → C
 ├── apple-touch-icon.png     180×180
 ├── img/
 │   ├── logo.png             Logotipo (header y favicon)
-│   ├── foto.jpg             Fotografía del hero
+│   ├── foto1.jpeg           Foto 1 del hero (la que se precarga)
+│   ├── foto2.jpeg           Foto 2 del hero
+│   ├── foto3.png            Foto 3 del hero
 │   ├── logos/               SVG locales: canva, chatgpt, copilot,
 │   │                        antigravity y windows. Cada uno lleva su
 │   │                        fuente y licencia en un comentario interno
 │   └── cv.pdf               ← PENDIENTE: colocar la hoja de vida
 └── js/
-    └── main.js              Revelado al hacer scroll, anclas y pausa del marquee
+    └──     main.js              Revelado al hacer scroll, anclas, carrusel de
+                         fotos del hero, galería de credenciales y pausa
+                         del marquee
 ├── src/
 │   ├── components/          Un componente por sección (solo marcado, sin CSS)
 │   │   ├── Header.astro
-│   │   ├── Hero.astro
-│   │   ├── Stack.astro      Marquesina infinita de logos
-│   │   ├── Trayectoria.astro
+│   │   ├── Hero.astro        Carrusel de 3 fotos y cartel de disponibilidad
+│   │   ├── Stack.astro       Marquesina infinita de logos
+│   │   ├── Trayectoria.astro Timeline con línea que avanza al hacer scroll,
+│   │   │                     y galería del diploma del SENA (Finovateh)
 │   │   ├── Proyectos.astro
 │   │   ├── Contacto.astro
 │   │   └── Footer.astro
@@ -105,11 +110,13 @@ los componentes para cambiar textos.
 
 ### ⚠ Antes de publicar, revisa esto
 
-1. `contacto[0]` — el correo es `correo@ejemplo.com`. **Cámbialo.**
-2. `contacto[2]` — el enlace de LinkedIn apunta a un perfil vacío.
-3. `stack` — **un logo es una afirmación.** Quita las tecnologías que no
+1. `stack` — **un logo es una afirmación.** Quita las tecnologías que no
    manejes: quien lo ve da por hecho que sí.
-4. Coloca tu hoja de vida en `public/cv.pdf`.
+2. Coloca tu hoja de vida en `public/cv.pdf`.
+3. `proyectos[].enlace.url` apunta al perfil de GitHub, no a repositorios.
+4. Añade `public/img/diploma-tecnico.jpg` y `public/img/entrega-diploma.jpg`
+   para llenar los dos huecos de la galería, y borra `public/img/foto.jpg`
+   cuando ya no la uses.
 
 ### La marquesina de logos
 
@@ -189,10 +196,23 @@ Dos, y coinciden en todos los bloques: **1050 px** y **700 px**.
 
 ## Imágenes
 
-| Archivo | Uso | Tamaño |
+| Archivo | Uso | Tamaño real |
 | --- | --- | --- |
 | `public/img/logo.png` | Header y favicon | 992×1061 px |
-| `public/img/foto.jpg` | Foto del hero | 992×1061 px |
+| `public/img/foto1.jpeg` | Foto 1 del hero (la precargada) | 960×1280 px, 177 KB |
+| `public/img/foto2.jpeg` | Foto 2 del hero | 899×1599 px, 159 KB |
+| `public/img/foto3.png` | Foto 3 del hero | 463×937 px, 634 KB |
+| `public/img/foto.jpg` | Sin uso, quedó de la versión anterior | 992×1061 px, 255 KB |
+
+Las fotos del hero están en `src/components/Hero.astro` (`const fotos`). El
+carrusel rota cada 15 s y se apaga solo si el sistema pide menos movimiento
+(`prefers-reduced-motion`). Cada foto tiene su propio encuadre en
+`.photo--1`, `.photo--2` y `.photo--3` mediante `object-position`.
+
+La galería de credenciales (`src/components/Trayectoria.astro`) usa por ahora
+**marcadores**, no imágenes: dos huecos con icono SVG que indican dónde irá
+`public/img/diploma-tecnico.jpg` y `public/img/entrega-diploma.jpg`. Al añadir
+esas fotos hay que cambiar el `<div class="credential-slot">` por un `<img>`.
 
 Para reemplazar una imagen, mantén el mismo nombre de archivo. Para cambiar el
 marco de la foto, ajusta `aspect-ratio` en `.photo-frame`.

@@ -104,7 +104,7 @@ export const experiencia: Experiencia[] = [
       'Bases sólidas en algorítmica, estructuras de datos y modelado de datos.',
       'Práctica del ciclo completo: del requerimiento al despliegue de una aplicación.',
     ],
-    stack: ['JavaScript', 'SQL', 'MySQL', 'HTML5', 'CSS3', 'Java'],
+    stack: ['JavaScript', 'Python', 'SQL', 'MySQL', 'HTML5', 'CSS3', 'Java'],
   },
   {
     puesto: 'Ingeniería de Sistemas y Computación',

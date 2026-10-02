@@ -1,22 +1,19 @@
 ---
 import { perfil } from '../data/perfil';
 import { withBase } from '../paths';
+
+const fotos = ['/img/foto1.jpeg', '/img/foto2.jpeg', '/img/foto3.png'];
 ---
 
 <section class="hero" id="inicio">
   <div class="hero-inner container">
     <div class="content">
-      <p class="eyebrow">DESARROLLO DE SOFTWARE · SISTEMAS</p>
+      <div class="hero-kicker">
+        <p class="eyebrow">DESARROLLO DE SOFTWARE · SISTEMAS</p>
+      </div>
 
       <div class="hero-heading">
         <h1 class="hero-name">{perfil.nombre}</h1>
-
-        <p class="hero-placard">
-          <span class="hero-placard-dot" aria-hidden="true"></span>
-          <span class="hero-placard-text">
-            Disponible<br />para trabajar
-          </span>
-        </p>
       </div>
 
       <p class="hero-tagline">
@@ -49,20 +46,43 @@ import { withBase } from '../paths';
     </div>
 
     <div class="hero-visual">
+      <p class="hero-placard">
+        <span class="hero-placard-dot" aria-hidden="true"></span>
+        <span class="hero-placard-text">Disponible para trabajar</span>
+      </p>
+
       <p class="hero-coords">
         {perfil.coordenadas.map((line) => <span>{line}</span>)}
       </p>
 
-      <div class="photo-frame">
-        <img
-          class="photo"
-          src={withBase('/img/foto.jpg')}
-          alt={perfil.fotoAlt}
-          width="992"
-          height="1061"
-          loading="eager"
-          decoding="async"
-        />
+      <div class="photo-frame" data-photo-frame>
+        <div class="photo-images" role="img" aria-label={perfil.fotoAlt}>
+          {
+            fotos.map((foto, indice) => (
+              <img
+                class={`photo photo--${indice + 1}${indice === 0 ? ' is-active' : ''}`}
+                src={withBase(foto)}
+                alt=""
+                aria-hidden="true"
+                width="992"
+                height="1061"
+                loading={indice === 0 ? 'eager' : 'lazy'}
+                fetchpriority={indice === 0 ? 'high' : 'auto'}
+                decoding="async"
+              />
+            ))
+          }
+        </div>
+        <button
+          class="photo-toggle"
+          type="button"
+          data-photo-toggle
+          aria-pressed="false"
+          hidden
+        >
+          <span class="photo-toggle__icon" aria-hidden="true">❚❚</span>
+          <span data-photo-toggle-label>Pausar fotos</span>
+        </button>
         <p class="photo-caption">{perfil.fotoCaption}</p>
       </div>
 
