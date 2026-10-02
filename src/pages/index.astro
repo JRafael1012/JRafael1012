@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { portfolio, projects } from '../data/portfolio';
+import { portfolio, projects, skills } from '../data/portfolio';
 import '../styles/portfolio.css';
 ---
 
@@ -23,10 +23,11 @@ import '../styles/portfolio.css';
 			<section class="hero" id="inicio" aria-labelledby="hero-title">
 				<div class="hero-copy">
 					<p class="eyebrow"><span class="status-dot"></span>{portfolio.role}</p>
-					<h1 id="hero-title">Código con propósito.<br /><em>Soluciones reales.</em></h1>
+					<h1 id="hero-title">Transformo ideas en <em>soluciones digitales</em> que generan resultados</h1>
 					<p class="hero-description">{portfolio.intro}</p>
 					<div class="hero-actions">
-						<a class="button button-primary" href="#proyectos">Ver proyectos <span aria-hidden="true">↓</span></a>
+						<a class="button button-primary" href="#proyectos">Ver mis proyectos <span aria-hidden="true">↓</span></a>
+						<a class="button button-secondary" href="#contacto">Contrátame <span aria-hidden="true">↗</span></a>
 						<a class="text-link" href="#sobre-mi">Conóceme <span aria-hidden="true">↗</span></a>
 					</div>
 					<div class="hero-note"><span>01 — 03</span><span>Portafolio seleccionado</span></div>
@@ -44,6 +45,33 @@ import '../styles/portfolio.css';
 					<span>Bases de datos</span><i aria-hidden="true">✳</i>
 					<span>Soluciones tecnológicas</span>
 			</div>
+
+			<section class="skills-band" aria-label="Lenguajes y herramientas" data-marquee>
+				<div class="skills-band-heading">
+					<p>TECNOLOGÍAS QUE EXPLORO</p>
+					<span>STACK / 01—13</span>
+				</div>
+				<div class="skills-marquee">
+					<div class="skills-track">
+						<div class="skills-group">
+							{skills.map((skill) => (
+								<div class="skill-item">
+									<img src={skill.icon} alt="" loading="lazy" />
+									<span>{skill.name}</span>
+								</div>
+							))}
+						</div>
+						<div class="skills-group" aria-hidden="true">
+							{skills.map((skill) => (
+								<div class="skill-item">
+									<img src={skill.icon} alt="" loading="lazy" />
+									<span>{skill.name}</span>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			</section>
 
 			<section class="work-section section-wrap" id="proyectos" aria-labelledby="work-title">
 				<div class="section-heading">
