@@ -1,8 +1,31 @@
 ---
-import { perfil } from '../data/perfil';
+import { contacto, perfil } from '../data/perfil';
 import { withBase } from '../paths';
 
 const fotos = ['/img/foto1.jpeg', '/img/foto2.jpeg', '/img/foto3.png'];
+const linkedin = contacto.find((item) => item.label === 'LinkedIn');
+const correo = contacto.find((item) => item.label === 'Correo');
+const redes = [
+  {
+    nombre: 'WhatsApp',
+    icono: 'whatsapp',
+    href: 'https://wa.me/573238176273',
+  },
+  {
+    nombre: 'Instagram',
+    icono: 'instagram',
+    href: 'https://www.instagram.com/rafaelarlant1012/',
+  },
+  ...(linkedin
+    ? [{ nombre: 'LinkedIn', icono: 'linkedin', href: linkedin.href }]
+    : []),
+  {
+    nombre: 'Discord',
+    icono: 'discord',
+    href: 'https://discord.com/users/724412152214978644',
+  },
+  ...(correo ? [{ nombre: 'Gmail', icono: 'gmail', href: correo.href }] : []),
+];
 ---
 
 <section class="hero" id="inicio">
@@ -55,35 +78,86 @@ const fotos = ['/img/foto1.jpeg', '/img/foto2.jpeg', '/img/foto3.png'];
         {perfil.coordenadas.map((line) => <span>{line}</span>)}
       </p>
 
-      <div class="photo-frame" data-photo-frame>
-        <div class="photo-images" role="img" aria-label={perfil.fotoAlt}>
+      <div class="hero-photo-column">
+        <div class="photo-frame" data-photo-frame>
+          <div class="photo-images" role="img" aria-label={perfil.fotoAlt}>
+            {
+              fotos.map((foto, indice) => (
+                <img
+                  class={`photo photo--${indice + 1}${indice === 0 ? ' is-active' : ''}`}
+                  src={withBase(foto)}
+                  alt=""
+                  aria-hidden="true"
+                  width="992"
+                  height="1061"
+                  loading={indice === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={indice === 0 ? 'high' : 'auto'}
+                  decoding="async"
+                />
+              ))
+            }
+          </div>
+          <button
+            class="photo-toggle"
+            type="button"
+            data-photo-toggle
+            aria-pressed="false"
+            hidden
+          >
+            <span class="photo-toggle__icon" aria-hidden="true">❚❚</span>
+            <span data-photo-toggle-label>Pausar fotos</span>
+          </button>
+          <p class="photo-caption">{perfil.fotoCaption}</p>
+        </div>
+        <nav class="hero-socials" aria-label="Redes y contacto">
           {
-            fotos.map((foto, indice) => (
-              <img
-                class={`photo photo--${indice + 1}${indice === 0 ? ' is-active' : ''}`}
-                src={withBase(foto)}
-                alt=""
-                aria-hidden="true"
-                width="992"
-                height="1061"
-                loading={indice === 0 ? 'eager' : 'lazy'}
-                fetchpriority={indice === 0 ? 'high' : 'auto'}
-                decoding="async"
-              />
+            redes.map((red) => (
+              <a
+                class="hero-social"
+                href={red.href}
+                aria-label={red.nombre}
+                title={red.nombre}
+                target={red.href.startsWith('mailto:') ? undefined : '_blank'}
+                rel={red.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+              >
+                <span class="hero-social__mark" aria-hidden="true">
+                  {red.icono === 'whatsapp' && (
+                    <svg class="hero-social__icon hero-social__icon--whatsapp" viewBox="0 0 24 24">
+                      <path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5Z" />
+                      <path d="M9 8.5c.3 2.7 2 4.5 4.8 5.4l1.2-1.3 2 .9c-.2 1.3-1.1 2-2.5 2-3.6-.2-6.9-3.5-7.1-7.1 0-1.3.7-2.2 2-2.5l.9 2L9 9.1" />
+                    </svg>
+                  )}
+                  {red.icono === 'instagram' && (
+                    <svg class="hero-social__icon" viewBox="0 0 24 24">
+                      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+                      <circle cx="12" cy="12" r="4" />
+                      <circle class="hero-social__icon-dot" cx="17.7" cy="6.7" r="1" />
+                    </svg>
+                  )}
+                  {red.icono === 'linkedin' && (
+                    <svg class="hero-social__icon hero-social__icon--linkedin" viewBox="0 0 24 24">
+                      <path d="M5 8.5H2.5V21H5V8.5ZM3.75 6.8a1.55 1.55 0 1 0 0-3.1 1.55 1.55 0 0 0 0 3.1ZM21.5 13.8c0-3.7-2-5.5-4.7-5.5a4.1 4.1 0 0 0-3.7 2v-1.8h-2.5V21h2.5v-6.2c0-1.7.9-2.8 2.4-2.8s2.3 1 2.3 2.8V21h3.7v-7.2Z" />
+                    </svg>
+                  )}
+                  {red.icono === 'discord' && (
+                    <svg class="hero-social__icon hero-social__icon--discord" viewBox="0 0 24 24">
+                      <path d="M7 6.5a16 16 0 0 1 3-.8l.5 1a13 13 0 0 1 3 0l.5-1a16 16 0 0 1 3 .8c1.6 2.3 2.4 4.7 2.5 7.4a13 13 0 0 1-4.2 2.2l-.9-1.4a8 8 0 0 0 1.4-.7 10 10 0 0 1-8.6 0 8 8 0 0 0 1.4.7l-.9 1.4a13 13 0 0 1-4.2-2.2C4.6 11.2 5.4 8.8 7 6.5Z" />
+                      <circle cx="9" cy="11" r="1" fill="var(--bg)" />
+                      <circle cx="15" cy="11" r="1" fill="var(--bg)" />
+                    </svg>
+                  )}
+                  {red.icono === 'gmail' && (
+                    <svg class="hero-social__icon" viewBox="0 0 24 24">
+                      <rect x="3" y="5" width="18" height="14" rx="2" />
+                      <path d="m4 7 8 6 8-6" />
+                    </svg>
+                  )}
+                </span>
+                <span>{red.nombre}</span>
+              </a>
             ))
           }
-        </div>
-        <button
-          class="photo-toggle"
-          type="button"
-          data-photo-toggle
-          aria-pressed="false"
-          hidden
-        >
-          <span class="photo-toggle__icon" aria-hidden="true">❚❚</span>
-          <span data-photo-toggle-label>Pausar fotos</span>
-        </button>
-        <p class="photo-caption">{perfil.fotoCaption}</p>
+        </nav>
       </div>
 
       <p class="hero-badge" aria-hidden="true">{perfil.badge}</p>
