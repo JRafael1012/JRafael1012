@@ -1,0 +1,98 @@
+---
+import { techStack } from '../data/tech-stack';
+const items = [...techStack, ...techStack];
+---
+
+<div class="tech-marquee" aria-label="Tecnologías que manejo">
+	<div class="tech-marquee-track">
+		{items.map((tech) => (
+			<div class="tech-item">
+				<img
+					src={`https://skillicons.dev/icons?i=${tech.icon}&theme=light`}
+					alt={`${tech.name} logo`}
+					loading="lazy"
+					decoding="async"
+				/>
+				<span>{tech.name}</span>
+			</div>
+		))}
+	</div>
+</div>
+
+<style>
+	.tech-marquee {
+		position: relative;
+		overflow: hidden;
+		padding: 1rem 0;
+		border-block: 1px solid var(--line);
+		mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+		-webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+	}
+
+	.tech-marquee-track {
+		display: flex;
+		align-items: center;
+		gap: 2.5rem;
+		width: max-content;
+		animation: tech-marquee 40s linear infinite;
+		will-change: transform;
+	}
+
+	.tech-marquee:hover .tech-marquee-track {
+		animation-play-state: paused;
+	}
+
+	.tech-item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.5rem 0.75rem;
+		border-radius: 0.5rem;
+		white-space: nowrap;
+	}
+
+	.tech-item img {
+		height: 32px;
+		width: auto;
+		display: block;
+	}
+
+	.tech-item span {
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: var(--muted);
+	}
+
+	@keyframes tech-marquee {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(-50%);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.tech-marquee-track {
+			gap: 1.5rem;
+			animation-duration: 30s;
+		}
+
+		.tech-item img {
+			height: 24px;
+		}
+
+		.tech-item span {
+			font-size: 0.75rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.tech-marquee-track {
+			animation: none;
+			flex-wrap: wrap;
+			justify-content: center;
+			width: 100%;
+		}
+	}
+</style>

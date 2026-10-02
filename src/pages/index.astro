@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { portfolio, projects, skills } from '../data/portfolio';
+import { portfolio, projects } from '../data/portfolio';
+import TechMarquee from '../components/TechMarquee.astro';
 import '../styles/portfolio.css';
 ---
 
@@ -39,11 +40,13 @@ import '../styles/portfolio.css';
 				</div>
 			</section>
 
+			<TechMarquee />
+
 			<div class="discipline-strip" aria-label="Áreas de trabajo">
-					<span>Desarrollo web</span><i aria-hidden="true">✳</i>
-					<span>Backend y API</span><i aria-hidden="true">✳</i>
-					<span>Bases de datos</span><i aria-hidden="true">✳</i>
-					<span>Soluciones tecnológicas</span>
+					<span>Enfoque: Frontend</span><i aria-hidden="true">✳</i>
+					<span>HTML · CSS · JavaScript · TypeScript</span><i aria-hidden="true">✳</i>
+					<span>Backend y datos: Python · SQL</span><i aria-hidden="true">✳</i>
+					<span>Herramientas: Astro · React · Git</span>
 			</div>
 
 			<section class="skills-band" aria-label="Lenguajes y herramientas" data-marquee>
