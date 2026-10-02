@@ -59,7 +59,10 @@ sitio listo para publicar.
 - **D11 — Iconos locales (2026-10-02):** Windows (skillicons.dev, licencia no
   verificada), Copilot (Wikimedia Commons, dominio público; se le añadió
   `fill="#ffba08"` porque venía negro), ChatGPT (Wikimedia Commons, dominio
-  público), AntiGravity y Canva (thesvg.org, MIT). Cada SVG lleva su fuente y
+  público; se cambió de `ChatGPT_logo.svg`, que era el icono de la app —un
+  cuadrado verde azulado que desentonaba con la cinta— a `ChatGPT-Logo.svg`,
+  el nudo pelado, y se le añadió `fill="#ffba08"`), AntiGravity y Canva
+  (thesvg.org, MIT). Cada SVG lleva su fuente y
   licencia en un comentario interno. Canva no está en `cdn.simpleicons.org`
   aunque sí en el paquete npm: se usa el SVG local en vez de saltarse esa
   retirada.

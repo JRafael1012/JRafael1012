@@ -996,6 +996,11 @@ a:hover {
   flex-wrap: wrap;
 }
 
+.stack {
+  padding-block-start: calc(clamp(4rem, 9vw, 7.5rem) - 29px - 0.7cm);
+  padding-block-end: calc(clamp(4rem, 9vw, 7.5rem) - 9px - 0.7cm);
+}
+
 .stack__head .eyebrow {
   margin-bottom: 1.25rem;
 }

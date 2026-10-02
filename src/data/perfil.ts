@@ -158,7 +158,9 @@ export const experiencia: Experiencia[] = [
  *   · Windows → skillicons.dev (licencia del origen no verificada).
  *   · Copilot → Wikimedia Commons, dominio público. Se le añadió
  *     fill="#ffba08" porque venía en negro y no se veía sobre este fondo.
- *   · ChatGPT → Wikimedia Commons, dominio público. Sin modificar.
+ *   · ChatGPT → Wikimedia Commons (ChatGPT-Logo.svg), dominio público. Se le
+ *     añadió fill="#ffba08": el primer archivo que se probó era el icono de
+ *     la app, un cuadrado verde azulado que desentonaba con la cinta.
  *   · AntiGravity → thesvg.org, MIT. Conserva sus colores de marca.
  *   · Canva → thesvg.org, MIT. Conserva su degradado de marca.
  *   Cada archivo lleva su fuente y licencia anotadas dentro del propio SVG.
