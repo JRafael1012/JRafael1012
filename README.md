@@ -19,7 +19,7 @@ Sitio estático de una sola página, en español, construido con
 | Estilos | CSS puro | Un solo archivo, sin framework ni dependencias |
 | Tipografías | Inter + JetBrains Mono | Autoalojadas vía `@fontsource-variable`, sin peticiones a terceros |
 | Comportamiento | JavaScript nativo | ~3 KB, sin librería |
-| Logos del stack | Simple Icons (CDN) | SVG teñido del color de la paleta |
+| Logos del stack | Simple Icons + Devicon + SVG locales | 29 en ámbar (Simple Icons), 3 a color (Devicon), 5 en `public/img/logos/` |
 | Despliegue | GitHub Actions → Pages | Publica `dist/` en cada push a `main` |
 
 ---
@@ -35,6 +35,9 @@ public/                       Hero → Stack → Trayectoria → Proyectos → C
 ├── img/
 │   ├── logo.png             Logotipo (header y favicon)
 │   ├── foto.jpg             Fotografía del hero
+│   ├── logos/               SVG locales: canva, chatgpt, copilot,
+│   │                        antigravity y windows. Cada uno lleva su
+│   │                        fuente y licencia en un comentario interno
 │   └── cv.pdf               ← PENDIENTE: colocar la hoja de vida
 └── js/
     └── main.js              Revelado al hacer scroll, anclas y pausa del marquee
@@ -104,28 +107,32 @@ los componentes para cambiar textos.
 
 1. `contacto[0]` — el correo es `correo@ejemplo.com`. **Cámbialo.**
 2. `contacto[2]` — el enlace de LinkedIn apunta a un perfil vacío.
-3. `experiencia` — las **fechas están como `AÑO — AÑO`** a propósito, para
-   que no se publique un dato sin confirmar. Pon las reales. El técnico sí
-   es SENA; la universidad sigue como `Institución`.
-4. `proyectos[].enlace.url` — apunta al perfil de GitHub, no a repositorios.
-5. `stack` — **un logo es una afirmación.** Quita las tecnologías que no
+3. `stack` — **un logo es una afirmación.** Quita las tecnologías que no
    manejes: quien lo ve da por hecho que sí.
-6. Coloca tu hoja de vida en `public/cv.pdf`.
+4. Coloca tu hoja de vida en `public/cv.pdf`.
 
 ### La marquesina de logos
 
-Los logos se descargan de `https://cdn.simpleicons.org/<slug>/ffba08`. Si una
-tecnología no tiene `slug`, se muestra solo el nombre, con un hueco punteado
-para no romper el ritmo de la fila.
+Un logo se resuelve en este orden, y se para en el primero que exista:
+
+1. `slug` → `https://cdn.simpleicons.org/<slug>/ffba08` (SVG teñido de ámbar).
+2. `di` → Devicon, a color, para lo que Simple Icons no tiene.
+3. `icono` → un SVG de `public/img/logos/`. Se lee con `withBase()`, sin eso
+   devolvería 404 en GitHub Pages.
+
+Si no hay ninguno de los tres, se muestra solo el nombre, con un hueco punteado
+para no romper el ritmo de la fila. Hoy las 37 tecnologías tienen logo.
 
 | Slug que da 404 | En su lugar |
 | --- | --- |
 | `css3` | usa `css` |
 | `java` | usa `openjdk` |
-| `sql` | no existe; se deja sin logo |
-| `vscode` / `visualstudiocode` | no existen; VS Code va sin logo |
-| `microsoftword` / `microsoftexcel` | no existen; Word y Excel sin logo |
+| `vscode` / `visualstudiocode` | no existen; usa `di: 'vscode'` (Devicon) |
 | `openai` | usa `anthropic` o `claude` |
+| `canva` | está en el paquete npm de Simple Icons pero **no** en `cdn.simpleicons.org`; usa un SVG local |
+| `chatgpt` / `openai` | no existen; usa el SVG local de Wikimedia Commons |
+| `bash` | usa `gnubash` |
+| `nodejs` | usa `nodedotjs` |
 
 Para añadir una, comprueba que el slug responde antes de dar por hecho que
 funciona:
