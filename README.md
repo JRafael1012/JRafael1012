@@ -6,7 +6,7 @@ Sistemas y Computación y técnico en Desarrollo de Software.
 Sitio estático de una sola página, en español, construido con
 [Astro](https://astro.build) y desplegado en GitHub Pages.
 
-**URL:** https://jrafael1012.github.io/JRafael1012/
+**URL:** https://jrafael1012.github.io/PorfolioJR/
 
 ---
 
@@ -79,7 +79,7 @@ public/                       Hero → Stack → Trayectoria → Proyectos → C
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321/JRafael1012
+npm run dev      # http://localhost:4321/PorfolioJR
 ```
 
 | Comando | Qué hace |
@@ -285,12 +285,12 @@ compila y publica `dist/` en GitHub Pages.
 ### Si el push no publica: revisa esto
 
 1. **Pages puede no estar habilitado.** Es el fallo más probable y no se
-   arregla desde el código. En <https://github.com/JRafael1012/JRafael1012/settings/pages>
+   arregla desde el código. En <https://github.com/JRafael1012/PorfolioJR/settings/pages>
    la fuente debe ser **GitHub Actions**. Se comprueba sin credenciales:
-   `has_pages` en `https://api.github.com/repos/JRafael1012/JRafael1012` debe
+   `has_pages` en `https://api.github.com/repos/JRafael1012/PorfolioJR` debe
    ser `true`; si es `false`, el repositorio no tiene Pages activo y
    `deploy-pages` falla.
-2. **La URL correcta lleva subcarpeta**: `https://jrafael1012.github.io/JRafael1012/`.
+2. **La URL correcta lleva subcarpeta**: `https://jrafael1012.github.io/PorfolioJR/`.
    `https://jrafael1012.github.io/` da 404 aunque todo esté bien, porque el
    repositorio no es `JRafael1012.github.io`.
 3. **Ver los errores** en la pestaña *Actions* del repositorio. Cada paso va
@@ -304,7 +304,7 @@ El sitio no vive en la raíz del dominio sino en
 declara:
 
 ```js
-base: '/JRafael1012',
+base: '/PorfolioJR',
 ```
 
 Y por eso existe `src/paths.ts`: la función `withBase()` antepone ese prefijo a

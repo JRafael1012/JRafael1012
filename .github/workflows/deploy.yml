@@ -42,7 +42,7 @@ jobs:
         run: npx astro check
 
       - name: Construir el sitio
-        run: npx astro build
+        run: npm run build
 
       - name: Subir artefacto
         uses: actions/upload-pages-artifact@v3

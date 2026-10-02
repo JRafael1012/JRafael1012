@@ -1,12 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// El repositorio de GitHub Pages es `JRafael1012/JRafael1012` (no el repo
-// especial `<usuario>.github.io`), por lo que el sitio se publica bajo
-// `/JRafael1012`. Si en el futuro hay dominio propio, se define SITE y
-// se deja BASE vacío.
-const SITE = process.env.SITE ?? 'https://jrafael1012.github.io';
-const BASE = process.env.BASE ?? '/JRafael1012';
+// El repositorio `JRafael1012/PorfolioJR` se publica bajo `/PorfolioJR`.
+// Si se configura un dominio propio, se puede definir SITE y dejar BASE vacío.
+const SITE = process.env.SITE ?? 'https://jrafael1012.github.io/PorfolioJR/';
+const BASE = process.env.BASE ?? '/PorfolioJR';
 
 export default defineConfig({
   site: SITE,

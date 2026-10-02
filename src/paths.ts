@@ -1,6 +1,6 @@
 /**
  * `BASE` refleja el campo `base` de `astro.config.mjs` sin la barra final.
- * Con `base: '/'` queda vacío; con `base: '/JRafael1012'` queda '/JRafael1012'.
+ * Con `base: '/'` queda vacío; con `base: '/PorfolioJR'` queda '/PorfolioJR'.
  */
 const BASE = import.meta.env.BASE_URL.replace(/\/+$/, '');
 
