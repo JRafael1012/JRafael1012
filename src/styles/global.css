@@ -1167,6 +1167,148 @@ a:hover {
   gap: 3rem;
 }
 
+/* Botón que despliega un bloque. El texto alterna entre "Ver" y "Ocultar";
+   la flecha gira para señalar el estado. */
+.exp-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, var(--line));
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.22s ease, background-color 0.22s ease;
+}
+
+.exp-toggle:hover {
+  border-color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+}
+
+.exp-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.exp-toggle__icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--accent);
+  transition: transform 0.22s ease;
+}
+
+.exp-toggle[aria-expanded='true'] .exp-toggle__icon {
+  transform: rotate(180deg);
+}
+
+/* Bloque plegable de competencias y torneos. Sale cerrado; `hidden` basta
+   porque el panel no lleva `display` propio. Va dentro del item de robótica,
+   que es una rejilla de tres columnas: ocupa la fila entera. */
+.exp-extra {
+  grid-column: 1 / -1;
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.exp-extra__panel {
+  margin-top: 1.75rem;
+}
+
+.exp-extra__panel[hidden] {
+  display: none;
+}
+
+.exp-extra__vacio {
+  color: var(--dim);
+  font-size: 0.9rem;
+}
+
+.exp-extra__vacio code {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.82em;
+}
+
+.comp-list {
+  display: grid;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Las ocho tarjetas usan el mismo ritmo y los mismos tipos que el resto de
+   la trayectoria: periodo en mono ámbar, título en la escala de `h3` del
+   bloque, y las dos líneas de apoyo en la misma voz. */
+.comp-item {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 0.4rem 1.5rem;
+  padding-left: 1.25rem;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+
+.comp-item__periodo {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  padding-top: 0.2rem;
+}
+
+.comp-item__body {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.comp-item__body h3 {
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.comp-item__evento,
+.comp-item__resultado,
+.comp-item__lugar {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.comp-item__evento {
+  color: var(--muted);
+}
+
+.comp-item__resultado {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.comp-item__lugar {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .comp-item {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+}
+
 .exp-list::before,
 .exp-list::after {
   position: absolute;
@@ -1345,7 +1487,8 @@ a:hover {
   }
 }
 
-/* Marco para las fotos del diploma y el momento de la entrega. */
+/* Marco con borde para las fotos del diploma y el momento de la entrega.
+   La línea de arriba es la barra de progreso: va sola, sin botones. */
 .credential-gallery {
   position: relative;
   min-width: 0;
@@ -1364,15 +1507,15 @@ a:hover {
   content: '';
   background: linear-gradient(90deg, var(--accent-2), var(--accent));
   box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 48%, transparent);
-  transform: scaleX(0);
   transform-origin: left;
-}
-
-.credential-gallery.is-playing::after {
-  animation: credential-progress 5s linear both;
+  animation: credential-progress 5s linear infinite;
 }
 
 @keyframes credential-progress {
+  from {
+    transform: scaleX(0);
+  }
+
   to {
     transform: scaleX(1);
   }
@@ -1467,79 +1610,117 @@ a:hover {
   overflow-wrap: anywhere;
 }
 
-.credential-caption,
-.credential-gallery__controls {
+.credential-caption {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  color: var(--muted);
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--line);
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.35px;
   text-transform: uppercase;
 }
 
-.credential-caption {
-  color: var(--muted);
-  padding-top: 0.65rem;
-  border-top: 1px solid var(--line);
-}
-
 .credential-caption span:last-child {
   color: var(--accent);
 }
 
-.credential-gallery__controls {
-  margin-top: 0;
-  min-height: 2.9rem;
-  padding: 0 0.8rem;
-  border-top: 1px solid var(--line);
+/* ============================================================
+   COLLAGE DE ROBÓTICA
+   ------------------------------------------------------------
+   Cuatro casillas enrejan las fotos del bloque de robótica. En cada
+   turno todas las casillas avanzan una posición, así que las
+   combinaciones que salen son distintas sin repetir fotos.
+
+   Sin borde y sin botones, igual que la galería de credenciales: el
+   cambio de fotos es automático y sin controles. Las casillas van pegadas,
+   sin líneas que las separen: se leen como una sola imagen.
+
+   Son marcadores: cada casilla dice qué archivo espera. Al añadir la
+   foto real, cambia el `.rob-slot` por un `<img>` (ver README).
+
+   CLASES
+     .rob-collage .......... el marco (solo la rejilla)
+     .rob-collage__grid .... la rejilla; role="img", no se lee por partes
+     .rob-collage__tile .... una casilla
+     .rob-collage__layer ... una foto dentro de la casilla
+     .rob-slot ............. el marcador mientras falte la foto
+   ------------------------------------------------------------ */
+.exp-item--collage {
+  grid-template-columns: 10rem minmax(0, 1fr) minmax(15rem, 0.9fr);
+  align-items: start;
 }
 
-.credential-gallery__status {
-  display: inline-flex;
-  gap: 0.3rem;
-  color: var(--accent);
+.rob-collage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg-raise);
 }
 
-.credential-gallery__status span:last-child {
-  color: var(--dim);
+.rob-collage__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
 }
 
-.credential-gallery__toggle,
-.credential-gallery__next {
-  display: inline-flex;
+.rob-collage__tile {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.rob-collage__layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0.55rem;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.rob-collage__layer.is-active {
+  opacity: 1;
+}
+
+.rob-slot {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  min-height: 1.9rem;
-  padding: 0.35rem 0.55rem;
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--muted);
+  gap: 0.3rem;
+  width: 100%;
+  text-align: center;
+}
+
+.rob-slot__index {
+  color: var(--dim);
   font-family: var(--mono);
-  font-size: 10px;
-  cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  font-size: 9px;
+  letter-spacing: 0.5px;
 }
 
-.credential-gallery__toggle:hover,
-.credential-gallery__next:hover {
+.rob-slot__icon {
+  width: 34px;
+  height: 34px;
+  padding: 7px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+  border-radius: 8px;
   color: var(--accent);
-  border-color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg));
 }
 
-.credential-gallery__toggle:focus-visible,
-.credential-gallery__next:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.credential-gallery__next {
-  width: 2rem;
-  padding-inline: 0;
-  color: var(--accent);
-  font-size: 15px;
+.rob-slot__path {
+  max-width: 100%;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 9px;
+  overflow-wrap: anywhere;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1563,14 +1744,24 @@ a:hover {
   .credential-gallery::after {
     display: none;
   }
+
+  .credential-slide,
+  .rob-collage__layer,
+  .exp-toggle,
+  .exp-toggle__icon {
+    transition: none;
+  }
 }
 
 @media (max-width: 780px) {
-  .exp-item--technician {
+  .exp-item--technician,
+  .exp-item--collage,
+  .exp-item--collage.is-collapsed {
     grid-template-columns: 8rem minmax(0, 1fr);
   }
 
-  .credential-gallery {
+  .credential-gallery,
+  .rob-collage {
     grid-column: 2;
     width: min(100%, 23rem);
   }
@@ -1583,7 +1774,8 @@ a:hover {
     padding-left: 1.1rem;
   }
 
-  .credential-gallery {
+  .credential-gallery,
+  .rob-collage {
     grid-column: 1;
     width: min(100%, 23rem);
   }
@@ -1876,38 +2068,164 @@ a:hover {
 /* ============================================================
    10. FOOTER
    ------------------------------------------------------------
-   Pie de página: marca a la izquierda y nota a la derecha.
+   Pie de página con marca, navegación breve y llamada de contacto.
 
    CLASES
      .site-footer ........ el <footer>
-     .site-footer__inner  fila, usa también .container
+     .site-footer__main . identidad, navegación y contacto
      .site-footer__brand  el nombre del sitio en blanco
-     .site-footer__note . la nota de ubicación, en monoespaciada
+     .site-footer__bottom-inner copyright y enlace de regreso
 
    USADO POR: Footer.astro.
    ============================================================ */
 .site-footer {
+  position: relative;
+  overflow: hidden;
   border-top: 1px solid var(--line);
-  padding-block: 2.5rem;
+  padding-top: 3.25rem;
   color: var(--dim);
   font-size: 0.88rem;
+  background:
+    radial-gradient(ellipse at 12% 0%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 38%),
+    color-mix(in srgb, var(--bg) 94%, var(--night-bordeaux));
 }
 
-.site-footer__inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem 2rem;
+.site-footer__main {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1.3fr) minmax(10rem, 0.8fr) minmax(15rem, 1fr);
+  gap: 2.5rem;
+  padding-bottom: 2.75rem;
 }
 
 .site-footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
   color: var(--white);
   font-weight: 800;
+  font-size: 1.05rem;
 }
 
-.site-footer__note {
+.site-footer__brand:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.site-footer__brand img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.site-footer__identity p,
+.site-footer__contact p {
+  margin-top: 0.85rem;
+  color: var(--dim);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.site-footer__nav h2,
+.site-footer__contact h2 {
+  margin-bottom: 0.9rem;
+  color: var(--white);
   font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.site-footer__nav ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 1.2rem;
+  list-style: none;
+}
+
+.site-footer__nav a,
+.site-footer__bottom-inner a {
+  color: var(--muted);
+  font-size: 0.82rem;
+  transition: color 180ms ease;
+}
+
+.site-footer__nav a:hover,
+.site-footer__bottom-inner a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.site-footer__email {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.85rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--line);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.site-footer__email:hover {
+  border-color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  text-decoration: none;
+}
+
+.site-footer__bottom {
+  border-top: 1px solid var(--line-soft);
+}
+
+.site-footer__bottom-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.25px;
+}
+
+.site-footer__bottom-inner p span {
+  color: var(--white);
+  font-weight: 700;
+}
+
+@media (max-width: 800px) {
+  .site-footer__main {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .site-footer__identity {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-footer {
+    padding-top: 2.5rem;
+  }
+
+  .site-footer__main {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding-bottom: 2rem;
+  }
+
+  .site-footer__identity {
+    grid-column: auto;
+  }
+
+  .site-footer__bottom-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.35rem;
+    padding-block: 0.85rem;
+  }
 }

@@ -5,6 +5,12 @@ export interface Experiencia {
   resumen: string;
   logros: string[];
   stack: string[];
+  /**
+   * Nombres de las fotos del collage de este bloque. Solo el nombre: la
+   * carpeta es `public/img/`. Si falta, no se pinta collage, y el bloque se
+   * mantiene como un item normal de la trayectoria.
+   */
+  galeria?: string[];
 }
 
 export interface Proyecto {
@@ -12,6 +18,20 @@ export interface Proyecto {
   resumen: string;
   stack: string[];
   enlace?: { label: string; url: string };
+}
+
+/** Una competencia o torneo en el que participaste. */
+export interface Competencia {
+  /** Temporada o nombre del torneo, por ejemplo "Cargo Connect". */
+  titulo: string;
+  /** Fase o programa, por ejemplo "Torneo regional y nacional". */
+  evento?: string;
+  /** Temporada o fecha, por ejemplo "2021 — 2022". */
+  periodo: string;
+  /** Puesto obtenido, por ejemplo "Campeones regionales y nacionales". */
+  resultado?: string;
+  /** Ciudad y país donde se hizo, por ejemplo "Sydney, Australia". */
+  lugar?: string;
 }
 
 export interface Tecnologia {
@@ -80,9 +100,9 @@ export const perfil = {
 };
 
 export const nav = [
-  { label: 'Proyectos', href: '#proyectos' },
-  { label: 'Trayectoria', href: '#trayectoria' },
   { label: 'Stack', href: '#stack' },
+  { label: 'Trayectoria', href: '#trayectoria' },
+  { label: 'Proyectos', href: '#proyectos' },
   { label: 'Contacto', href: '#contacto' },
 ];
 
@@ -92,9 +112,11 @@ export const nav = [
  *
  * ⚠ PENDIENTE
  *   · Los logros describen el programa, ni resultados medidos.
+ *   · Faltan las competencias y los torneos: están en `competencias`, más
+ *     abajo. Con la lista vacía la sección sale con un aviso en vez de datos
+ *     inventados.
  */
-export const experiencia: Experiencia[] = [
-  {
+export const experiencia: Experiencia[] = [  {
     puesto: 'Técnico en Desarrollo de Software',
     empresa: 'SENA',
     periodo: '2025 — 2026',
@@ -129,7 +151,88 @@ export const experiencia: Experiencia[] = [
       'Aprendizaje directo de hardware, mentoría y trabajo en equipo.',
       'Como coach, transmito lo aprendido acompañando a quienes empiezan.',
     ],
-    stack: ['Arduino', 'C++', 'Sensores', 'Electrónica'],
+    stack: [
+      'Arduino',
+      'C++',
+      'Scratch',
+      'Python',
+      'Sensores',
+      'Electrónica',
+      'Diseño 3D',
+      'Diseño 2D',
+    ],
+    galeria: [
+      'robotica-1.jpg',
+      'robotica-2.jpg',
+      'robotica-3.jpg',
+      'robotica-4.jpg',
+      'robotica-5.jpg',
+      'robotica-6.jpg',
+    ],
+  },
+];
+
+/**
+ * Competencias y torneos, nacionales e internacionales.
+ *
+ * De más reciente a más antiguo. Lo que falta va anotado en cada entrada:
+ *
+ * Todos los regionales y nacionales fueron en Bogotá, salvo *Submerged*, que
+ * fue en Cartagena. Cada torneo tiene puesto y ciudad.
+ */
+export const competencias: Competencia[] = [
+  {
+    titulo: 'WRO Future Innovator Senior',
+    periodo: '2026',
+    resultado: '1.er lugar',
+  },
+  {
+    titulo: 'Open International FIRST LEGO League',
+    evento: 'Torneo internacional',
+    periodo: 'Mayo 2026',
+    resultado: '15.º lugar',
+    lugar: 'Guadalajara, México',
+  },
+  {
+    titulo: 'Unearthed',
+    evento: 'Torneo regional y nacional',
+    periodo: '2025 — 2026',
+    resultado: 'Segundo lugar',
+    lugar: 'Bogotá, Colombia',
+  },
+  {
+    titulo: 'Submerged',
+    evento: 'Torneo regional y nacional',
+    periodo: '2024 — 2025',
+    resultado: 'Cuarto lugar',
+    lugar: 'Cartagena, Colombia',
+  },
+  {
+    titulo: 'Masterpiece',
+    evento: 'Torneo regional y nacional',
+    periodo: '2023 — 2024',
+    resultado: 'Tercer lugar',
+    lugar: 'Bogotá, Colombia',
+  },
+  {
+    titulo: 'SuperPowered',
+    evento: 'Torneo regional y nacional',
+    periodo: '2022 — 2023',
+    resultado: 'Segundo lugar',
+    lugar: 'Bogotá, Colombia',
+  },
+  {
+    titulo: 'Cargo Connect',
+    evento: 'Torneo regional y nacional',
+    periodo: '2021 — 2022',
+    resultado: 'Campeones (1.er lugar)',
+    lugar: 'Bogotá, Colombia',
+  },
+  {
+    titulo: 'Asia Pacific Open Championship',
+    periodo: '2024',
+    resultado: '15.º lugar',
+    lugar: 'Sydney, Australia',
   },
 ];
 

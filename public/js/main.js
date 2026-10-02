@@ -11,6 +11,10 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* Lo rellena el bloque de la línea de tiempo; sirve para recalcularla
+     cuando la trayectoria se despliega y pasa a tener altura. */
+  var refreshTimeline = null;
+
   /* --- 1. Revelado al hacer scroll --- */
   var targets = document.querySelectorAll('.reveal');
 
@@ -91,79 +95,102 @@
     }
   }
 
-  /* --- 4. Fotos del diploma y su entrega --- */
+  /* --- 4. Botón que despliega las competencias y torneos --- */
+  /* Cada botón apunta a su panel con `aria-controls`, así que el bloque es
+     el mismo aunque se añadan más secciones plegables. */
+  var expToggles = document.querySelectorAll('[data-exp-toggle]');
+
+  expToggles.forEach(function (toggle) {
+    var panel = document.getElementById(toggle.getAttribute('aria-controls'));
+    var label = toggle.querySelector('[data-exp-toggle-label]');
+    var cerrado = label ? label.textContent.trim() : '';
+
+    if (!panel) return;
+
+    var setOpen = function (open) {
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.hidden = !open;
+
+      if (label) {
+        label.textContent = open ? cerrado.replace(/^Ver/, 'Ocultar') : cerrado;
+      }
+
+      if (open && refreshTimeline) refreshTimeline();
+    };
+
+    toggle.addEventListener('click', function () {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    setOpen(false);
+  });
+
+  /* --- 5. Fotos del diploma y su entrega --- */
+  /* Sin botones, como el collage: el avance es automático. La foto visible
+     se marca con `is-active`, y `aria-hidden` evita que un lector de pantalla
+     lea las dos fotos a la vez. */
   var credentialGallery = document.querySelector('[data-credential-gallery]');
 
-  if (credentialGallery) {
+  if (credentialGallery && !reduceMotion) {
     var credentialSlides = Array.prototype.slice.call(
       credentialGallery.querySelectorAll('[data-credential-slide]')
     );
-    var credentialStatus = credentialGallery.querySelector('[data-credential-status]');
-    var credentialToggle = credentialGallery.querySelector('[data-credential-toggle]');
-    var credentialToggleLabel = credentialGallery.querySelector(
-      '[data-credential-toggle-label]'
+
+    if (credentialSlides.length > 1) {
+      window.setInterval(function () {
+        var current = credentialSlides.findIndex(function (slide) {
+          return slide.classList.contains('is-active');
+        });
+
+        if (current < 0) return;
+
+        var next = (current + 1) % credentialSlides.length;
+        credentialSlides[current].classList.remove('is-active');
+        credentialSlides[current].setAttribute('aria-hidden', 'true');
+        credentialSlides[next].classList.add('is-active');
+        credentialSlides[next].setAttribute('aria-hidden', 'false');
+      }, 5000);
+    }
+  }
+
+  /* --- 6. Collage de fotos de robótica --- */
+  /* Cuatro casillas enrejan el grupo de fotos: en cada turno todas avanzan
+     una posición, así que las combinaciones que salen son distintas sin
+     repetir fotos. Cada casilla lleva dentro todas las capas y solo se ve la
+     activa, para que el cambio sea un fundido y no un salto.
+
+     Va solo, sin botones: si el usuario pidió menos movimiento, no arranca. */
+  var robCollage = document.querySelector('[data-rob-collage]');
+
+  if (robCollage && !reduceMotion) {
+    var robTiles = Array.prototype.slice.call(
+      robCollage.querySelectorAll('.rob-collage__tile')
     );
-    var credentialNext = credentialGallery.querySelector('[data-credential-next]');
 
-    if (credentialSlides.length > 1 && credentialToggle && credentialNext) {
-      var activeCredential = 0;
-      var credentialPaused = false;
-      var credentialTimer;
+    if (robTiles.length > 1) {
+      var robTotal = robTiles[0].querySelectorAll('.rob-collage__layer').length;
+      var robTurn = 0;
 
-      var showCredential = function (index) {
-        credentialSlides[activeCredential].classList.remove('is-active');
-        credentialSlides[activeCredential].setAttribute('aria-hidden', 'true');
-        activeCredential = index % credentialSlides.length;
-        credentialSlides[activeCredential].classList.add('is-active');
-        credentialSlides[activeCredential].setAttribute('aria-hidden', 'false');
+      var scheduleRobTurn = function () {
+        robTiles.forEach(function (tile, casilla) {
+          var layers = tile.querySelectorAll('.rob-collage__layer');
 
-        if (credentialStatus) {
-          credentialStatus.textContent = String(activeCredential + 1).padStart(2, '0');
-        }
+          for (var i = 0; i < layers.length; i += 1) {
+            layers[i].classList.toggle('is-active', i === (casilla + robTurn) % layers.length);
+          }
+        });
       };
 
-      var scheduleCredentialAdvance = function () {
-        window.clearTimeout(credentialTimer);
-        credentialGallery.classList.remove('is-playing');
-
-        if (reduceMotion || credentialPaused) return;
-
-        void credentialGallery.offsetWidth;
-        credentialGallery.classList.add('is-playing');
-        credentialTimer = window.setTimeout(function () {
-          showCredential(activeCredential + 1);
-          scheduleCredentialAdvance();
+      if (robTotal > robTiles.length) {
+        window.setInterval(function () {
+          robTurn = (robTurn + 1) % robTotal;
+          scheduleRobTurn();
         }, 5000);
-      };
-
-      credentialNext.addEventListener('click', function () {
-        showCredential(activeCredential + 1);
-        scheduleCredentialAdvance();
-      });
-
-      credentialToggle.addEventListener('click', function () {
-        credentialPaused = !credentialPaused;
-        credentialToggle.setAttribute(
-          'aria-pressed',
-          credentialPaused ? 'true' : 'false'
-        );
-
-        if (credentialToggleLabel) {
-          credentialToggleLabel.textContent = credentialPaused ? 'Reanudar' : 'Pausar';
-        }
-
-        scheduleCredentialAdvance();
-      });
-
-      if (reduceMotion) {
-        credentialToggle.hidden = true;
-      } else {
-        scheduleCredentialAdvance();
       }
     }
   }
 
-  /* --- 5. Progreso visual de la línea de trayectoria --- */
+  /* --- 7. Progreso visual de la línea de trayectoria --- */
   var timeline = document.querySelector('[data-timeline]');
 
   if (timeline && !reduceMotion) {
@@ -171,6 +198,10 @@
 
     var updateTimelineProgress = function () {
       timelineFrame = 0;
+
+      // Plegada no tiene altura: medirla daría una división por cero.
+      if (!timeline.offsetHeight) return;
+
       var bounds = timeline.getBoundingClientRect();
       var marker = window.innerHeight * 0.58;
       var progress = (marker - bounds.top) / bounds.height;
@@ -183,12 +214,14 @@
       timelineFrame = window.requestAnimationFrame(updateTimelineProgress);
     };
 
+    refreshTimeline = requestTimelineUpdate;
+
     window.addEventListener('scroll', requestTimelineUpdate, { passive: true });
     window.addEventListener('resize', requestTimelineUpdate);
     requestTimelineUpdate();
   }
 
-  /* --- 6. Compensación del header fijo al navegar por anclas --- */
+  /* --- 8. Compensación del header fijo al navegar por anclas --- */
   var header = document.querySelector('.site-header');
 
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {

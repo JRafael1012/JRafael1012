@@ -43,15 +43,16 @@ public/                       Hero → Stack → Trayectoria → Proyectos → C
 │   └── cv.pdf               ← PENDIENTE: colocar la hoja de vida
 └── js/
     └──     main.js              Revelado al hacer scroll, anclas, carrusel de
-                         fotos del hero, galería de credenciales y pausa
-                         del marquee
+                         fotos del hero, galería de credenciales,
+                         collage de robótica y pausa del marquee
 ├── src/
 │   ├── components/          Un componente por sección (solo marcado, sin CSS)
 │   │   ├── Header.astro
 │   │   ├── Hero.astro        Carrusel de 3 fotos y cartel de disponibilidad
 │   │   ├── Stack.astro       Marquesina infinita de logos
 │   │   ├── Trayectoria.astro Timeline con línea que avanza al hacer scroll,
-│   │   │                     y galería del diploma del SENA (Finovateh)
+│   │   │                     galería del diploma del SENA (Finovateh) y
+│   │   │                     collage de fotos de robótica
 │   │   ├── Proyectos.astro
 │   │   ├── Contacto.astro
 │   │   └── Footer.astro
@@ -237,6 +238,26 @@ La galería de credenciales (`src/components/Trayectoria.astro`) usa por ahora
 **marcadores**, no imágenes: dos huecos con icono SVG que indican dónde irá
 `public/img/diploma-tecnico.jpg` y `public/img/entrega-diploma.jpg`. Al añadir
 esas fotos hay que cambiar el `<div class="credential-slot">` por un `<img>`.
+
+El collage de robótica (mismo archivo) también usa marcadores, en una rejilla de
+2×2: cada casilla espera una de las seis fotos `public/img/robotica-1.jpg` …
+`robotica-6.jpg`. Los nombres salen de `galeria` en `src/data/perfil.ts`; si un
+bloque de experiencia no tiene ese campo, no se pinta collage. Al añadir las
+fotos, cambia el `<div class="rob-slot">` de esa capa por un `<img>`.
+
+Las dos galerías cambian solas cada 5 s, sin bordes ni botones: si el sistema
+pide menos movimiento (`prefers-reduced-motion`), se quedan en la primera
+combinación y no arrancan.
+
+**Competencias y torneos.** Dentro del bloque de Robótica hay un botón *Ver
+experiencia en competencias* que despliega la lista de
+`competencias` (`src/data/perfil.ts`), de más reciente a más antigua. Cada
+entrada lleva `titulo`, `periodo` y, si los tienes, `evento`, `resultado` y
+`lugar`; los que faltan se pueden omitir y la tarjeta simplemente no los muestra.
+
+Los 8 torneo llevan puesto y ciudad: los regionales y nacionales fueron en
+Bogotá, salvo *Submerged* (Cartagena); el internacional en Guadalajara, México;
+y el *Asia Pacific Open Championship* en Sydney, Australia.
 
 Para reemplazar una imagen, mantén el mismo nombre de archivo. Para cambiar el
 marco de la foto, ajusta `aspect-ratio` en `.photo-frame`.

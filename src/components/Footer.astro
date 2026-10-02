@@ -1,12 +1,57 @@
 ---
-import { perfil, años } from '../data/perfil';
+import { contacto, nav, perfil, años } from '../data/perfil';
+import { withBase } from '../paths';
+
+const correo = contacto.find((item) => item.label === 'Correo');
 ---
 
 <footer class="site-footer">
-  <div class="site-footer__inner container">
-    <p>
-      <span class="site-footer__brand">{perfil.marca}</span> — © {años}
-    </p>
-    <p class="site-footer__note">Bogotá, Colombia · {perfil.areas}</p>
+  <div class="site-footer__main container">
+    <div class="site-footer__identity">
+      <a class="site-footer__brand" href={withBase('/')} aria-label={`${perfil.marca}, ir al inicio`}>
+        <img
+          src={withBase('/img/logo.png')}
+          alt=""
+          width="38"
+          height="38"
+          loading="lazy"
+          decoding="async"
+        />
+        <span>{perfil.marca}</span>
+      </a>
+      <p>Desarrollo de software<br />desde {perfil.ciudad}.</p>
+    </div>
+
+    <nav class="site-footer__nav" aria-label="Navegación del pie de página">
+      <h2>Explorar</h2>
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-footer__contact">
+      <h2>¿Hablamos?</h2>
+      <p>Estoy disponible para nuevas oportunidades.</p>
+      {
+        correo && (
+          <a class="site-footer__email" href={correo.href}>
+            Escríbeme <span aria-hidden="true">↗</span>
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  <div class="site-footer__bottom">
+    <div class="site-footer__bottom-inner container">
+      <p>© {años} <span>{perfil.marca}</span>. Hecho con intención.</p>
+      <a href="#inicio">Volver arriba <span aria-hidden="true">↑</span></a>
+    </div>
   </div>
 </footer>
