@@ -1,0 +1,63 @@
+# Diagnostico temporal: localiza que archivo hace fallar `astro check`
+# en Ubuntu. En Windows el mismo commit da 0 errores, 0 warnings y 0 hints.
+#
+# `astro check` no acepta rutas para filtrar, asi que se genera un tsconfig
+# por archivo que solo incluye ese archivo. El job que falle nombra el culpable.
+#
+# Cuando la causa este encontrada, se borra este archivo.
+
+name: Diagnose astro check
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: check ${{ matrix.file }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        file:
+          - astro.config.mjs
+          - src/paths.ts
+          - src/data/perfil.ts
+          - src/layouts/BaseLayout.astro
+          - src/pages/index.astro
+          - src/components/Header.astro
+          - src/components/Hero.astro
+          - src/components/Stack.astro
+          - src/components/Trayectoria.astro
+          - src/components/Proyectos.astro
+          - src/components/Contacto.astro
+          - src/components/Footer.astro
+          - public/js/main.js
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Aislar el archivo en su propio tsconfig
+        run: |
+          cfg="tsconfig.isla.json"
+          {
+            echo '{'
+            echo '  "extends": "./tsconfig.json",'
+            echo '  "include": [".astro/types.d.ts", "${{ matrix.file }}"]'
+            echo '}'
+          } > "$cfg"
+          cat "$cfg"
+
+      - name: Comprobar ${{ matrix.file }}
+        run: npx astro check --tsconfig tsconfig.isla.json
