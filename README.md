@@ -5,9 +5,26 @@ Portafolio web minimalista construido con [Astro](https://astro.build/). Present
 ## Tecnologías
 
 - [Astro 7.3.5](https://astro.build/) – Generador de sitios estáticos
-- TypeScript
-- CSS moderno (sin frameworks)
-- Vite
+- [TypeScript](https://www.typescriptlang.org/) – Tipado estático
+- [JavaScript](https://developer.mozilla.org/es/docs/Web/JavaScript) – Lógica del frontend
+- [CSS](https://developer.mozilla.org/es/docs/Web/CSS) – Estilos modernos (sin frameworks)
+- [HTML5](https://developer.mozilla.org/es/docs/Glossary/HTML5) – Estructura semántica
+- [Vite](https://vitejs.dev/) – Herramienta de build y desarrollo
+- [Git](https://git-scm.com/) – Control de versiones
+- [GitHub](https://github.com/) – Repositorio y despliegue
+
+### Tecnologías que manejo (tech stack)
+
+![Astro](https://img.shields.io/badge/Astro-03071e?style=for-the-badge&logo=astro&logoColor=ff5d01)
+![TypeScript](https://img.shields.io/badge/TypeScript-03071e?style=for-the-badge&logo=typescript&logoColor=007ACC)
+![JavaScript](https://img.shields.io/badge/JavaScript-03071e?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+![HTML5](https://img.shields.io/badge/HTML5-03071e?style=for-the-badge&logo=html5&logoColor=E34F26)
+![CSS3](https://img.shields.io/badge/CSS3-03071e?style=for-the-badge&logo=css3&logoColor=1572B6)
+![Git](https://img.shields.io/badge/Git-03071e?style=for-the-badge&logo=git&logoColor=F05032)
+![GitHub](https://img.shields.io/badge/GitHub-03071e?style=for-the-badge&logo=github&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-03071e?style=for-the-badge&logo=vite&logoColor=646CFF)
+![JSON](https://img.shields.io/badge/JSON-03071e?style=for-the-badge&logo=json&logoColor=white)
+![Markdown](https://img.shields.io/badge/Markdown-03071e?style=for-the-badge&logo=markdown&logoColor=white)
 
 ## Estructura
 
@@ -16,49 +33,6 @@ Portafolio web minimalista construido con [Astro](https://astro.build/). Present
 - `src/styles/`: estilos CSS (`portfolio.css`).
 - `src/data/`: textos y datos de proyectos (`portfolio.ts`).
 - `src/scripts/`: lógica que se ejecuta en el navegador (`site.ts`).
-- `public/images/`: imágenes (`logo.png`, `logo.jpeg`).
+- `public/images/`: imágenes (`logo.png`).
 - `public/`: favicons, `site.webmanifest` y assets estáticos.
 - `plans/`: documentación MIDEGS.
-
-## Personalización
-
-Edita `src/data/portfolio.ts` para cambiar:
-
-- Nombre, inicial, rol y descripción
-- Correo electrónico (`email`)
-- Servicios (`services`)
-- Proyectos (`projects`)
-
-## Comandos
-
-```sh
-npm run dev        # Inicia servidor de desarrollo
-npm run dev -- --background  # Modo background (según AGENTS.md)
-npm run build      # Genera build estático en dist/
-npm run preview    # Previsualiza build generado
-npx astro dev stop   # Detiene servidor en background
-npx astro dev status # Estado del servidor
-```
-
-## Paleta de colores
-
-```css
---ink-black: #03071eff;
---night-bordeaux: #370617ff;
---black-cherry: #6a040fff;
---oxblood: #9d0208ff;
---brick-ember: #d00000ff;
---red-ochre: #dc2f02ff;
---cayenne-red: #e85d04ff;
---deep-saffron: #f48c06ff;
---orange: #faa307ff;
---amber-flame: #ffba08ff;
-```
-
-## Deploy
-
-Genera archivos estáticos con `npm run build`. El contenido de `dist/` está listo para desplegarse en cualquier hosting estático (Vercel, Netlify, Cloudflare Pages, GitHub Pages, etc.).
-
-## Live
-
-Repositorio: [https://github.com/JRafael1012/JRafael1012.git](https://github.com/JRafael1012/JRafael1012.git)
