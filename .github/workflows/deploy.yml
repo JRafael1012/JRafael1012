@@ -26,11 +26,23 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Entorno
+        run: |
+          node -v
+          npm -v
+          uname -a
+
       - name: Instalar dependencias
         run: npm ci
 
-      - name: Construir
-        run: npm run build
+      - name: Sincronizar tipos de Astro
+        run: npx astro sync
+
+      - name: Comprobar tipos
+        run: npx astro check
+
+      - name: Construir el sitio
+        run: npx astro build
 
       - name: Subir artefacto
         uses: actions/upload-pages-artifact@v3
