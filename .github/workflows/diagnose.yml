@@ -48,6 +48,11 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      # Sin esto falta .astro/types.d.ts y el chequeo mente: da errores que
+      # en el deploy normal no existen.
+      - name: Sincronizar tipos de Astro
+        run: npx astro sync
+
       - name: Aislar el archivo en su propio tsconfig
         run: |
           cfg="tsconfig.isla.json"
