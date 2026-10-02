@@ -1,0 +1,72 @@
+---
+import { perfil } from '../data/perfil';
+import { withBase } from '../paths';
+---
+
+<section class="hero" id="inicio">
+  <div class="hero-inner container">
+    <div class="content">
+      <p class="eyebrow">DESARROLLO DE SOFTWARE · SISTEMAS</p>
+
+      <div class="hero-heading">
+        <h1 class="hero-name">{perfil.nombre}</h1>
+
+        <p class="hero-placard">
+          <span class="hero-placard-dot" aria-hidden="true"></span>
+          <span class="hero-placard-text">
+            Disponible<br />para trabajar
+          </span>
+        </p>
+      </div>
+
+      <p class="hero-tagline">
+        Software que
+        <span>resuelve.</span>
+      </p>
+
+      <p class="hero-role">{perfil.rol}</p>
+      <p class="hero-subrole">{perfil.subtitulo}</p>
+
+      <p class="hero-description">{perfil.descripcion}</p>
+
+      <div class="hero-buttons">
+        <a href="#proyectos" class="btn btn--primary">
+          Conoce mis proyectos
+          <span aria-hidden="true">↓</span>
+        </a>
+        <a href={withBase(`/${perfil.cv.href}`)} class="btn">
+          Descargar CV
+          <span class="btn__arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <p class="hero-meta">
+        <span class="hero-meta-dot" aria-hidden="true"></span>
+        <span>{perfil.ciudad}</span>
+        <span class="hero-meta-divider" aria-hidden="true">/</span>
+        <span>{perfil.areas}</span>
+      </p>
+    </div>
+
+    <div class="hero-visual">
+      <p class="hero-coords">
+        {perfil.coordenadas.map((line) => <span>{line}</span>)}
+      </p>
+
+      <div class="photo-frame">
+        <img
+          class="photo"
+          src={withBase('/img/foto.jpg')}
+          alt={perfil.fotoAlt}
+          width="992"
+          height="1061"
+          loading="eager"
+          decoding="async"
+        />
+        <p class="photo-caption">{perfil.fotoCaption}</p>
+      </div>
+
+      <p class="hero-badge" aria-hidden="true">{perfil.badge}</p>
+    </div>
+  </div>
+</section>

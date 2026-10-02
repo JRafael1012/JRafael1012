@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Trayectoria from '../components/Trayectoria.astro';
+import Stack from '../components/Stack.astro';
+import Proyectos from '../components/Proyectos.astro';
+import Contacto from '../components/Contacto.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout>
+  <Header slot="header" />
+  <Hero />
+  <Stack />
+  <Trayectoria />
+  <Proyectos />
+  <Contacto />
+  <Footer slot="footer" />
+</BaseLayout>

@@ -1,0 +1,40 @@
+---
+import { experiencia } from '../data/perfil';
+---
+
+<section class="section" id="trayectoria">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">FORMACIÓN</p>
+      <h2 class="section__title">Trayectoria</h2>
+      <p class="section__subtitle">
+        Técnico en Desarrollo de Software e Ingeniería de Sistemas en curso.
+      </p>
+    </div>
+
+    <ol class="exp-list">
+      {
+        experiencia.map((item) => (
+          <li class="exp-item reveal">
+            <p class="exp-period">{item.periodo}</p>
+            <div class="exp-detail">
+              <h3>{item.puesto}</h3>
+              <p class="exp-company">{item.empresa}</p>
+              <p class="exp-summary">{item.resumen}</p>
+              <ul class="exp-achievements">
+                {item.logros.map((logro) => (
+                  <li>{logro}</li>
+                ))}
+              </ul>
+              <ul class="tag-list">
+                {item.stack.map((tech) => (
+                  <li class="tag">{tech}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

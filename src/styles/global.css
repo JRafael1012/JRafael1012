@@ -1,0 +1,1261 @@
+/* ============================================================
+   PORTFOLIO — HOJA DE ESTILO GLOBAL
+   ============================================================
+
+   Este es el ÚNICO archivo CSS del proyecto. Ningún componente
+   .astro lleva estilos dentro: todo vive aquí.
+
+   CÓMO EDITAR
+     · Para cambiar colores, tipografías o medidas: sección 1.
+     · Para cambiar el aspecto de una sección concreta: ve a su bloque.
+     · Cada bloque indica qué componente .astro lo usa, así sabes dónde
+       tocar si cambiaste una clase.
+
+   ÍNDICE
+     1.  Tokens .............. paleta, tipografía y medidas
+     2.  Base ................ reset, tipografía global y utilidades
+     3.  Componentes ........ secciones, tarjetas, etiquetas, botones
+     4.  Header .............. barra de navegación fija
+     5.  Hero ................ portada con texto, foto y decorados
+     6.  Trayectoria ......... lista de experiencia laboral
+     7.  Stack ............... tarjetas de tecnologías
+     8.  Proyectos ........... tarjetas de proyectos
+     9.  Contacto ............ lista de medios de contacto
+     10. Footer .............. pie de página
+
+   VARIABLES DE ENTORNO
+     · Los breakpoints son 1050 px y 700 px. Deben coincidir con los
+       @media de cada bloque.
+     · El sitio es de tema oscuro único: no hay modo claro.
+
+   ============================================================ */
+
+
+/* ============================================================
+   1. TOKENS
+   ------------------------------------------------------------
+   Paleta, tipografías y medidas. Son las únicas cosas que deberías
+   tocar para cambiar la identidad visual completa del sitio.
+
+   PALETA (10 colores, de oscuro a cálido)
+     --ink-black ...... #03071e  Fondo principal
+     --night-bordeaux  #370617  Base del header
+     --black-cherry ... #6a040f  Base de las tarjetas
+     --oxblood ....... #9d0208  Bordes de tarjetas y etiquetas
+     --brick-ember ... #d00000  Segunda línea del titular
+     --red-ochre ..... #dc2f02  Reservado
+     --cayenne-red ... #e85d04  Bordes de foto y enlaces
+     --deep-saffron .. #f48c06  Reservado
+     --orange ........ #faa307  Reservado
+     --amber-flame ... #ffba08  Acento principal
+
+   ROLES SEMÁNTICOS
+     En lugar de usar los colores crudos en el resto del archivo se usan
+     estas variables. Así puedes re-tematizar el sitio cambiando solo
+     --accent, --accent-2 y --accent-3.
+
+   USADO POR: todo el archivo.
+   ============================================================ */
+:root {
+  /* --- Paleta cruda --- */
+  --ink-black: #03071e;
+  --night-bordeaux: #370617;
+  --black-cherry: #6a040f;
+  --oxblood: #9d0208;
+  --brick-ember: #d00000;
+  --red-ochre: #dc2f02;
+  --cayenne-red: #e85d04;
+  --deep-saffron: #f48c06;
+  --orange: #faa307;
+  --amber-flame: #ffba08;
+
+  /* --- Superficies --- */
+  --bg: var(--ink-black);
+  --bg-nav: color-mix(in srgb, var(--night-bordeaux) 26%, var(--ink-black));
+  --bg-raise: color-mix(in srgb, var(--black-cherry) 16%, var(--ink-black));
+  --line: color-mix(in srgb, var(--oxblood) 34%, transparent);
+  --line-soft: color-mix(in srgb, #f4f6fb 12%, transparent);
+  --grid-line: color-mix(in srgb, #f4f6fb 5%, transparent);
+  --ring: color-mix(in srgb, var(--cayenne-red) 8%, transparent);
+
+  /* --- Texto --- */
+  --white: #f4f6fb;
+  --muted: #b9c3d4;
+  /* Antes #8e9bb0 daba 4.6:1 sobre el fondo: justo en el límite AA.
+     aclarado para tener margen. */
+  --dim: #9aa7bb;
+
+  /* --- Acentos --- */
+  --accent: var(--amber-flame);    /* títulos de sección, cifras clave */
+  --accent-2: var(--cayenne-red);  /* enlaces, bordes de foto */
+  --accent-3: var(--brick-ember);  /* palabra destacada del titular */
+
+  /* --- Tipografías ---
+     --mono  para etiquetas, coordenadas y datos (efecto técnico)
+     --sans  para todo el texto corrido */
+  --mono: 'Courier New', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
+
+  /* --- Medidas ---
+     --gutter  margen lateral de todo el contenido
+     --maxw    ancho máximo de una línea de texto */
+  --gutter: clamp(1rem, 4vw, 4.5rem);
+  --maxw: 1595px;
+}
+
+
+/* ============================================================
+   2. BASE
+   ------------------------------------------------------------
+   Reset, tipografía global y utilidades compartidas por todo el
+   sitio.
+
+   NOTA SOBRE EL RESET
+     El reset es mínimo a propósito. No se usa normalize.css ni una
+     librería: solo se quitan los márgenes por defecto y se define
+     box-sizing.
+
+   ACCESIBILIDAD
+     · :focus-visible dibuja un contorno amarillo en el elemento
+       enfocado. No lo elimines: es la única guía de foco visible.
+     · .skip-link es el enlace "Saltar al contenido". Está fuera de
+       pantalla hasta que recibe el foco.
+     · prefers-reduced-motion desactiva animaciones y transiciones
+       para quien lo tenga activado en su sistema.
+
+   USADO POR: todo el sitio (BaseLayout.astro).
+   ============================================================ */
+
+/* --- Reset --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--sans);
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: 900;
+}
+
+/* --- Enlaces --- */
+a {
+  color: var(--accent-2);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --- Utilería: contenedor --- */
+/* Centra el contenido y le aplica el margen lateral global. */
+.container {
+  width: min(var(--maxw), calc(100% - (var(--gutter) * 2)));
+  margin-inline: auto;
+}
+
+/* --- Utilería: antetítulo --- */
+/* La línea naranja de la izquierda la dibuja el pseudoelemento ::before. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  margin-bottom: 2rem;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 3px;
+  background: var(--accent);
+  flex: none;
+}
+
+/* --- Utilería: salto al contenido --- */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--accent-2);
+  color: var(--ink-black);
+  padding: 0.6rem 1rem;
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* --- Utilería: revelado al hacer scroll --- */
+/* .reveal arranca invisible. public/js/main.js le añade .is-visible
+   cuando el bloque entra en pantalla. Si el JavaScript no carga, este
+   bloque nunca se ve, por eso el @media de abajo lo neutraliza. */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* ============================================================
+   3. COMPONENTES COMPARTIDOS
+   ------------------------------------------------------------
+   Piezas que repiten varias secciones del sitio. Si cambias algo
+   aquí, cambia en todas a la vez.
+
+   CLASES
+     .section ............. envoltura con padding y borde superior
+     .section__head ....... bloque de título de cada sección
+     .section__title ...... el H2
+     .section__subtitle ... la descripción bajo el título
+     .card-grid ........... rejilla responsive de tarjetas
+     .card ............... fondo y borde de una tarjeta
+     .tag-list / .tag .... etiquetas de tecnología
+     .btn / .btn--primary  botones con flecha a la derecha
+     .btn__arrow ......... la flecha ↗, con color propio
+
+   USADO POR: todas las secciones y BaseLayout.astro.
+   ============================================================ */
+
+/* --- Secciones --- */
+.section {
+  padding-block: clamp(4rem, 9vw, 7.5rem);
+  border-top: 1px solid var(--line-soft);
+}
+
+.section__head {
+  margin-bottom: 3rem;
+}
+
+.section__title {
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  margin-bottom: 0.35rem;
+}
+
+.section__subtitle {
+  color: var(--muted);
+  max-width: 56ch;
+}
+
+/* --- Rejillas ---
+   auto-fit + minmax hace que las tarjetas se reacomoden solas.
+   min(100%, 22rem) evita que se desborden en pantallas estrechas. */
+.card-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+}
+
+/* --- Tarjetas --- */
+.card {
+  background: var(--bg-raise);
+  border: 1px solid var(--line);
+  padding: 1.75rem;
+}
+
+/* --- Etiquetas de tecnología --- */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  list-style: none;
+}
+
+.tag {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--oxblood) 22%, transparent);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  padding: 0.25rem 0.6rem;
+  white-space: nowrap;
+}
+
+/* --- Botones ---
+   .btn es el botón secundario. .btn--primary invierte los colores y
+   se usa solo en el CTA principal del hero. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  min-height: 56px;
+  padding: 0 20px;
+  border: 1px solid #5d687b;
+  color: var(--white);
+  font-weight: 800;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-2);
+  text-decoration: none;
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ink-black);
+}
+
+.btn__arrow {
+  color: var(--accent-2);
+  font-weight: 900;
+}
+
+.btn--primary .btn__arrow {
+  color: var(--ink-black);
+}
+
+
+/* ============================================================
+   4. HEADER
+   ------------------------------------------------------------
+   Barra de navegación fija arriba.
+
+   CLASES
+     .site-header .... el <header> completo
+     .nav ............ la barra, usa también .container
+     .brand ......... logotipo + nombre
+     .brand-mark .... el logotipo (public/img/logo.png)
+     .nav-links ..... lista de enlaces, usa <ul>/<li>
+     .nav-cv ........ el botón outlined de "Hoja de vida"
+
+   RESPONSIVE
+     1050 px .... se reduce la separación entre enlaces
+     700 px ..... barra más baja y tipografía menor
+
+   USADO POR: Header.astro.
+   ============================================================ */
+.site-header {
+  background: var(--bg-nav);
+  border-bottom: 1px solid var(--line-soft);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.nav {
+  min-height: 98px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+  padding-block: 0.75rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--white);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.brand:hover {
+  text-decoration: none;
+}
+
+.brand-mark {
+  position: relative;
+  width: 43px;
+  height: 43px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.6vw, 52px);
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--white);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.nav-links a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.nav-cv {
+  border: 1px solid #647087;
+  padding: 17px 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+}
+
+@media (max-width: 1050px) {
+  .nav-links {
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .nav {
+    min-height: 76px;
+  }
+
+  .nav-links {
+    gap: 0.9rem 1.1rem;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+  }
+
+  .nav-cv {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+}
+
+
+/* ============================================================
+   5. HERO
+   ------------------------------------------------------------
+   La portada. Es la parte másTZIdle del diseño, así que conviene
+   entenderla por partes:
+
+     · .hero ............ fondo con grilla y dos círculos decorados
+     · .hero-inner ..... la rejilla de dos columnas
+     · .content ........ columna de texto
+     · .hero-name ...... tu nombre; es lo más grande de la página
+     · .hero-tagline ... "Software que resuelve."; el <span> va en rojo
+     · .hero-role ...... carrera (color amarillo)
+     · .hero-subrole ... subcargo (gris)
+     · .hero-description  párrafo de presentación
+     · .hero-buttons .... los dos botones
+     · .hero-meta ...... ciudad y áreas, con punto y separador
+     · .hero-visual .... columna de la foto
+     · .hero-coords .... coordenadas, posicionadas sobre la foto
+     · .photo-frame .... marco naranja con hueco arriba y a la izquierda
+     · .photo .......... la imagen, encaja con object-fit
+     · .photo-caption .... franja de texto al pie de la foto
+     · .hero-badge ...... círculo "Software" superpuesto
+
+   RESPONSIVE
+     1050 px .... las dos columnas se apilan
+     700 px ..... titular más pequeño, botones a una columna
+
+   USADO POR: Hero.astro.
+   ============================================================ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Los dos círculos decorados que se asoman por abajo.
+   ::before es el exterior, ::after el interior con tinte naranja. */
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero::before {
+  width: 520px;
+  height: 520px;
+  border: 20px solid color-mix(in srgb, #f4f6fb 3.5%, transparent);
+  left: 28%;
+  bottom: -370px;
+}
+
+.hero::after {
+  width: 420px;
+  height: 420px;
+  border: 16px solid var(--ring);
+  left: 32%;
+  bottom: -315px;
+}
+
+/* 56% texto / 44% foto */
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 56% 44%;
+  align-items: center;
+  gap: 15px;
+  padding-block: 70px 55px;
+}
+
+/* --- Texto ---
+   La jerarquía va de mayor a menor:
+     .hero-name ...... el nombre, 84 px como mucho
+     .hero-tagline ... la frase, 51 px
+     .hero-role ...... carrera y subcargo, 16 px
+     .hero-description 18 px
+
+   El nombre es el elemento más grande porque es lo primero que alguien
+   necesita saber: quién es. La frase viene después, en segundo plano. */
+.hero-heading {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+/* Entrada del nombre: sube y aparece. Se anula con prefers-reduced-motion
+   más abajo, en el bloque del hero. */
+.hero-name {
+  font-size: clamp(2.6rem, 5.4vw, 5.25rem);
+  line-height: 0.98;
+  letter-spacing: -2.5px;
+  text-wrap: balance;
+  animation: hero-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --- El cartel "Disponible para trabajar" ---
+   Va inclinado sobre el borde inferior del nombre, al estilo del
+   "+ Demais" del diseño de referencia. */
+.hero-placard {
+  position: absolute;
+  right: 0;
+  bottom: -18px;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 9px 13px 9px 11px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink-black) 92%, var(--night-bordeaux));
+  transform: rotate(-2.5deg);
+  animation: hero-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+/* La cruz que precede al texto, como en el cartel de referencia */
+.hero-placard::before {
+  content: '+';
+  color: var(--accent-2);
+  font-family: var(--mono);
+  font-weight: 900;
+  font-size: 13px;
+  line-height: 1.1;
+}
+
+/* Punto de estado: late despacio para señalar que está disponible */
+.hero-placard-dot {
+  width: 7px;
+  height: 7px;
+  margin-top: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent);
+  animation: placard-pulse 2.4s ease-out infinite;
+}
+
+@keyframes placard-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+}
+
+.hero-placard-text {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.hero-tagline {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3.2vw, 3.2rem);
+  line-height: 1.06;
+  letter-spacing: -1.2px;
+  color: var(--muted);
+  margin-bottom: 1.75rem;
+}
+
+.hero-tagline span {
+  color: var(--accent-3);
+}
+
+.hero-role {
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.hero-subrole {
+  color: var(--muted);
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+.hero-description {
+  color: var(--muted);
+  max-width: 62ch;
+  font-size: 18px;
+  line-height: 1.75;
+  margin-bottom: 31px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 42px;
+  flex-wrap: wrap;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #adb8ca;
+  font-family: var(--mono);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+/* Punto naranja que precede a la ciudad */
+.hero-meta-dot {
+  width: 9px;
+  height: 9px;
+  background: var(--accent-2);
+  flex: none;
+}
+
+/* La barra "/" entre ciudad y áreas */
+.hero-meta-divider {
+  color: var(--accent);
+}
+
+/* --- Lado visual --- */
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+
+/* Coordenadas: absolute para flotar sobre la esquina de la foto */
+.hero-coords {
+  position: absolute;
+  top: 4px;
+  left: 7px;
+  z-index: 3;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.15;
+}
+.hero-coords span {
+  display: block;
+}
+
+/* El marco naranja: el padding descentrado crea el hueco
+   arriba y a la izquierda, y el caption ocupa la franja inferior. */
+.photo-frame {
+  position: relative;
+  width: min(100%, 530px);
+  aspect-ratio: 530 / 610;
+  border: 1px solid var(--accent-2);
+  padding: 16px 0 0 15px;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.88);
+}
+
+.photo-caption {
+  position: absolute;
+  left: 15px;
+  right: 0;
+  bottom: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  background: color-mix(in srgb, var(--ink-black) 90%, transparent);
+  font-family: var(--mono);
+  font-weight: 700;
+  /* 11 px es el mínimo cómodo para texto en mayúsculas pequeñas.
+     Con 10 px no se leía en pantallas de portátil. */
+  font-size: 11px;
+  letter-spacing: 0.6px;
+}
+
+.hero-badge {
+  position: absolute;
+  right: -31px;
+  bottom: 53px;
+  z-index: 4;
+  width: 83px;
+  height: 83px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--ink-black);
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1050px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    padding-top: 60px;
+    gap: 3rem;
+  }
+
+  .hero-visual {
+    justify-content: center;
+    padding-right: 0;
+  }
+
+  .photo-frame {
+    width: min(530px, 90vw);
+  }
+}
+
+@media (max-width: 700px) {
+  .hero-name {
+    letter-spacing: -1.5px;
+  }
+
+  /* El cartel deja de flotar y entra en el flujo: en pantallas
+     estrechas un absoluto se salía de la columna. */
+  .hero-heading {
+    margin-bottom: 20px;
+  }
+
+  .hero-placard {
+    position: static;
+    transform: none;
+    width: fit-content;
+    margin-top: 14px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .photo-frame {
+    padding: 10px 0 0 10px;
+  }
+
+  .photo-caption {
+    left: 10px;
+    height: 45px;
+  }
+
+  .hero-coords {
+    left: -2px;
+    top: -3px;
+  }
+
+  .hero-badge {
+    right: -8px;
+    bottom: 42px;
+    width: 65px;
+    height: 65px;
+  }
+
+  /* La entrada del nombre y el latido del cartel cuentan como animación:
+     sin ellas no hay nada que hacer y el sitio se ve estático. */
+  .hero-name,
+  .hero-placard {
+    animation: none;
+  }
+
+  .hero-placard-dot {
+    animation: none;
+  }
+}
+
+
+/* ============================================================
+   6. TRAYECTORIA / EXPERIENCIA
+   ------------------------------------------------------------
+   Lista cronológica de los puestos.
+
+   CLASES
+     .exp-list .......... envoltura <ol>
+     .exp-item .......... un puesto: periodo a la izquierda, detalle a la derecha
+     .exp-period ........ periodo, en monoespaciada
+     .exp-detail ........ columna de texto
+     .exp-company ....... nombre de la empresa, en naranja
+     .exp-summary ....... descripción del puesto
+     .exp-achievements . logros, con viñeta
+
+   El borde izquierdo de .exp-item es la línea vertical de tiempo.
+
+   RESPONSIVE
+     700 px ..... periodo y detalle se apilan en una columna
+
+   USADO POR: Trayectoria.astro.
+   ============================================================ */
+.exp-list {
+  list-style: none;
+  display: grid;
+  gap: 3rem;
+}
+
+.exp-item {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 0.5rem 2rem;
+  border-left: 2px solid var(--line);
+  padding-left: 1.75rem;
+}
+
+.exp-period {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  padding-top: 0.35rem;
+}
+
+.exp-detail h3 {
+  font-size: 1.35rem;
+  margin-bottom: 0.15rem;
+}
+
+.exp-company {
+  color: var(--accent-2);
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+}
+
+.exp-summary {
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+.exp-achievements {
+  margin: 0 0 1.1rem;
+  padding-left: 1.1rem;
+  color: var(--muted);
+}
+
+.exp-achievements li {
+  margin-bottom: 0.3rem;
+}
+
+@media (max-width: 700px) {
+  .exp-item {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    padding-left: 1.1rem;
+  }
+}
+
+
+/* ============================================================
+   7. STACK / MARQUESINA INFINITA
+   ------------------------------------------------------------
+   Los logos de las tecnologías en una cinta que se desplaza sin fin.
+
+   CLASES
+     .stack ............. la <section>
+     .stack__head ....... cabecera con el botón de pausa
+     .marquee ........... el viewport que recorta la cinta
+     .marquee__track .... la cinta móvil (contiene 2 copias)
+     .marquee__group .... una copia completa de la lista
+     .marquee__item ..... un logo + su nombre
+     .marquee__logo ..... el icono (SVG de Simple Icons)
+     .marquee__name ..... el texto, siempre presente
+     .marquee-toggle .... botón pausar / reproducir
+
+   POR QUÉ FUNCIONA EL BUCLE
+     La pista contiene la lista dos veces seguidas y la animación la
+     desplaza -50%. Cuando llega al final, la segunda copia ocupa
+     exactamente el lugar de la primera y el salto es invisible.
+
+   ACCESIBILIDAD (WCAG 2.2.2 — contenido en movimiento)
+     · Botón para pausar. El movimiento no puede ser el único modo.
+     · También se pausa al pasar el cursor o al enfocar la cinta.
+     · Con prefers-reduced-motion la cinta no se mueve y se vuelve
+       una fila desplazable con la barra de scroll.
+     · La segunda copia va con aria-hidden para que un lector de
+       pantalla no lea los nombres dos veces.
+
+   USADO POR: Stack.astro. El botón lo controla public/js/main.js.
+   ============================================================ */
+.stack__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem 2rem;
+  flex-wrap: wrap;
+}
+
+.stack__head .eyebrow {
+  margin-bottom: 1.25rem;
+}
+
+.marquee {
+  --marquee-duration: 42s;
+  overflow: hidden;
+  border-block: 1px solid var(--line-soft);
+  padding-block: 1.75rem;
+  /* Desvanece los extremos para que la cinta no se corte en seco */
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll var(--marquee-duration) linear infinite;
+}
+
+.marquee__group {
+  display: flex;
+  align-items: center;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  padding-right: clamp(2rem, 4vw, 3.5rem);
+  list-style: none;
+  margin: 0;
+}
+
+.marquee__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+/* El marco y el fondo hacen que, si un logo falla al descargarse, quede
+   un hueco limpio en lugar de un icono roto. El nombre sigue al lado,
+   así que la tecnología siempre queda identificada. */
+.marquee__logo {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  padding: 5px;
+  border: 1px solid var(--line);
+  background: var(--bg-raise);
+  object-fit: contain;
+  opacity: 0.62;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.marquee__item:hover .marquee__logo {
+  opacity: 1;
+  transform: scale(1.12);
+}
+
+/* Elementos sin logo (VS Code, Word, Excel, OpenCode…): se les dibuja un
+   hueco con el mismo tamaño que un logo, para que la fila mantenga el
+   ritmo y los nombres queden alineados. */
+.marquee__item:not(:has(.marquee__logo))::before {
+  content: '';
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border: 1px dashed var(--line);
+}
+
+.marquee__name {
+  font-family: var(--mono);
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  color: var(--muted);
+  transition: color 0.25s ease;
+}
+
+.marquee__item:hover .marquee__name {
+  color: var(--white);
+}
+
+/* --- El bucle --- */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* --- Pausa: al pasar el cursor, al enfocar, o con el botón --- */
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track,
+.marquee.is-paused .marquee__track {
+  animation-play-state: paused;
+}
+
+/* --- Botón de pausa --- */
+.marquee-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.marquee-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-2);
+}
+
+.marquee-toggle__icon {
+  color: var(--accent-2);
+  font-size: 9px;
+  letter-spacing: 0;
+}
+
+/* --- Sin movimiento: fila estática y desplazable --- */
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    mask-image: none;
+    scrollbar-width: thin;
+  }
+
+  .marquee__track {
+    animation: none;
+  }
+}
+
+
+/* ============================================================
+   8. PROYECTOS
+   ------------------------------------------------------------
+   Tarjetas de los proyectos, cada una con título, descripción,
+   tecnologías y un enlace opcional.
+
+   CLASES
+     .project-card ..... modifica .card; título un poco mayor
+     .project-summary . la descripción
+     .project-link .... enlace "Repositorio ↗"
+
+   Reutiliza .card, .card-grid y .tag-list de la sección 3.
+
+   USADO POR: Proyectos.astro.
+   ============================================================ */
+.project-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.6rem;
+}
+
+.project-summary {
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 1.5rem;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.project-link:hover {
+  color: var(--white);
+}
+
+
+/* ============================================================
+   9. CONTACTO
+   ------------------------------------------------------------
+   Lista de medios de contacto. Cada medio es una fila con su
+   etiqueta a la izquierda y el valor enlazado a la derecha.
+
+   CLASES
+     .contact-list ..... envoltura <ul>
+     .contact-item .... una fila, con borde inferior
+     .contact-label ... la etiqueta (Correo, GitHub, LinkedIn)
+     .contact-item a .. el valor, en negrita
+
+   USADO POR: Contacto.astro.
+   ============================================================ */
+.contact-list {
+  list-style: none;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.contact-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1.25rem;
+}
+
+.contact-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  min-width: 7rem;
+}
+
+.contact-item a {
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   10. FOOTER
+   ------------------------------------------------------------
+   Pie de página: marca a la izquierda y nota a la derecha.
+
+   CLASES
+     .site-footer ........ el <footer>
+     .site-footer__inner  fila, usa también .container
+     .site-footer__brand  el nombre del sitio en blanco
+     .site-footer__note . la nota de ubicación, en monoespaciada
+
+   USADO POR: Footer.astro.
+   ============================================================ */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-block: 2.5rem;
+  color: var(--dim);
+  font-size: 0.88rem;
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+}
+
+.site-footer__brand {
+  color: var(--white);
+  font-weight: 800;
+}
+
+.site-footer__note {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+}

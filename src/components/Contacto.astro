@@ -1,0 +1,32 @@
+---
+import { contacto } from '../data/perfil';
+---
+
+<section class="section" id="contacto">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">CONTACTO</p>
+      <h2 class="section__title">Hablemos</h2>
+      <p class="section__subtitle">
+        Disponible para nuevas oportunidades. El correo es la vía más rápida.
+      </p>
+    </div>
+
+    <ul class="contact-list">
+      {
+        contacto.map((item) => (
+          <li class="contact-item reveal">
+            <span class="contact-label">{item.label}</span>
+            <a
+              href={item.href}
+              target={item.href.startsWith('http') ? '_blank' : undefined}
+              rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            >
+              {item.valor}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

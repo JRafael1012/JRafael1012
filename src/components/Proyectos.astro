@@ -1,0 +1,42 @@
+---
+import { proyectos } from '../data/perfil';
+---
+
+<section class="section" id="proyectos">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">PROYECTOS</p>
+      <h2 class="section__title">Trabajo reciente</h2>
+      <p class="section__subtitle">
+        Problema, decisión y resultado. Lo que hice y por qué.
+      </p>
+    </div>
+
+    <div class="card-grid">
+      {
+        proyectos.map((proyecto) => (
+          <article class="card project-card reveal">
+            <h3>{proyecto.titulo}</h3>
+            <p class="project-summary">{proyecto.resumen}</p>
+            <ul class="tag-list">
+              {proyecto.stack.map((tech) => (
+                <li class="tag">{tech}</li>
+              ))}
+            </ul>
+            {proyecto.enlace && (
+              <a
+                class="project-link"
+                href={proyecto.enlace.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {proyecto.enlace.label}
+                <span aria-hidden="true">↗</span>
+              </a>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

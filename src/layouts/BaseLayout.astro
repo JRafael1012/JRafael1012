@@ -1,0 +1,53 @@
+---
+import { perfil } from '../data/perfil';
+import { withBase } from '../paths';
+
+// Fuentes autoalojadas: sin peticiones a Google ni a terceros.
+// `wght.css` incluye todos los subconjuntos, pero el navegador solo
+// descarga el que necesita (aquí, latin y latin-ext por los acentos).
+import '@fontsource-variable/inter/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/global.css';
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{perfil.meta.title}</title>
+    <meta name="description" content={perfil.meta.description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content={perfil.meta.themeColor} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:title" content={perfil.meta.title} />
+    <meta property="og:description" content={perfil.meta.description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={perfil.meta.title} />
+    <meta name="twitter:description" content={perfil.meta.description} />
+
+    <link rel="icon" href={withBase('/favicon.png')} type="image/png" sizes="256x256" />
+    <link rel="icon" href={withBase('/favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="preload" as="image" href={withBase('/img/foto.jpg')} />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <slot name="header" />
+
+    <main id="contenido">
+      <slot />
+    </main>
+
+    <slot name="footer" />
+
+    <script is:inline src={withBase('/js/main.js')} defer></script>
+  </body>
+</html>

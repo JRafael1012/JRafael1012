@@ -1,0 +1,10 @@
+# Normaliza los finales de línea para que el repo no cambie de formato
+# entre Windows (clonación local) y Linux (build en GitHub Actions).
+* text=auto eol=lf
+
+# Los archivos binarios no se tocan.
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
+*.pdf binary

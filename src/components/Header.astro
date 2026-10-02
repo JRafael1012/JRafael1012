@@ -1,0 +1,36 @@
+---
+import { perfil, nav } from '../data/perfil';
+import { withBase } from '../paths';
+---
+
+<header class="site-header">
+  <nav class="nav container" aria-label="Navegación principal">
+    <a class="brand" href={withBase('/')}>
+      <img
+        class="brand-mark"
+        src={withBase('/img/logo.png')}
+        alt=""
+        width="43"
+        height="43"
+        decoding="async"
+      />
+      <span>{perfil.marca}</span>
+    </a>
+
+    <ul class="nav-links">
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))
+      }
+      <li>
+        <a class="nav-cv" href={withBase(`/${perfil.cv.href}`)}>
+          {perfil.cv.label}
+          <span class="btn__arrow" aria-hidden="true">↗</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
