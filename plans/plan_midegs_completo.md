@@ -92,6 +92,25 @@ sitio listo para publicar.
   - **Pendiente**: `public/img/foto.jpg` (255 KB) quedó sin uso al pasar a
     `foto1.jpeg`. No se borra sin autorización del usuario, que es una
     fotografía original.
+- **D14 — El chequeo de tipos estaba enmascarado en local (2026-10-02):**
+  `astro check` falló en GitHub Actions en los cuatro primeros commits, desde
+  `b07887e`, y por eso el sitio nunca se publicó. La causa real: `astro.config.mjs`
+  usa `process.env` con `// @ts-check`, pero el proyecto **no declaraba
+  `@types/node`**. En Windows el error no aparecía porque existe
+  `C:\Users\User\node_modules\@types\node` (v24.0.10) **fuera del proyecto**, y
+  TypeScript sube por las carpetas buscando `node_modules/@types`. En Ubuntu ese
+  ancestro no existe, `process` queda sin tipar y el archivo falla.
+  **Consecuencia: todos los «0 errores» locales previos eran falsos negativos.**
+  Se declara `@types/node` como devDependency (lo que el proyecto usa de
+  verdad) y se aísla el archivo culpable con una matriz de un `tsconfig` por
+  archivo, porque `astro check` no acepta rutas para filtrar. Verificado: los
+  13 archivos pasan en Ubuntu.
+  **Lección para fases siguientes:** un build verde en esta máquina no prueba
+  nada si depende de tipos heredados del entorno. La evidencia válida es CI.
+- **D15 — Puerta de calidad restaurada (2026-10-02):** mientras se buscaba la
+  causa, `astro check` estaba en `continue-on-error: true` para no seguir
+  bloqueando el despliegue. Confirmado el arreglo, **vuelve a ser bloqueante**
+  (fase 5, criterio 1). El workflow `diagnose.yml` era temporal y se borró.
 - **D6 — CSS:** un único archivo, `src/styles/global.css`. Los `.astro` no
   llevan estilos dentro.
 - **D7 — Imagen pendiente:** `public/cv.pdf` es un archivo binario. La IA lo
@@ -191,6 +210,19 @@ Cierre: la fase no se cierra sin evidencia registrada aquí.
 - Confirmar que *Settings → Pages* usa la fuente **GitHub Actions**.
 - Si cambia el nombre del repositorio, actualizar `base` en
   `astro.config.mjs` (ver `README.md`).
+
+### Evidencia (2026-10-02)
+
+- **Build en Ubuntu:** correcto. `astro sync`, `astro check` y `astro build`
+  pasan; los 13 archivos dan 0 errores, 0 warnings y 0 hints. Causa del fallo
+  previo en D14.
+- **Paso `deploy`:** sigue fallando por una causa externa al código:
+  `has_pages` es `false`, el repositorio no tiene GitHub Pages habilitado. Se
+  activa en *Settings → Pages* → fuente **GitHub Actions**, que requiere la
+  cuenta del usuario. **Fase 07 abierta por ese motivo.**
+- Los pasos del workflow van separados (`Entorno`, `Instalar dependencias`,
+  `Sincronizar tipos`, `Comprobar tipos`, `Construir el sitio`, `Subir
+  artefacto`, `Desplegar`) para localizar el fallo sin depender del log.
 
 ---
 

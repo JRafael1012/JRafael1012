@@ -90,6 +90,22 @@ npm run dev      # http://localhost:4321/JRafael1012
 
 Requiere Node.js 22 o superior.
 
+### `@types/node` no es opcional
+
+`astro.config.mjs` lee `process.env.SITE` y `process.env.BASE`, y lleva
+`// @ts-check`, así que necesita los tipos de Node. Por eso `@types/node` está
+en `devDependencies`.
+
+Esto no es puramente teórico: mientras faltaba, `astro check` **fallaba en GitHub
+Actions y pasaba en local**. La causa era que en este equipo existe
+`C:\Users\User\node_modules\@types\node` fuera del proyecto, y TypeScript sube
+por las carpetas buscando `node_modules/@types`; en Linux ese ancestro no
+existe. O sea: **un `npm run build` verde aquí puede mentir si depende de tipos
+heredados del entorno.** La prueba válida es el workflow de GitHub.
+
+No borres `@types/node` del `package.json` sin comprobar `npx astro check` en
+Actions.
+
 ---
 
 ## Cómo editar el contenido
@@ -234,12 +250,31 @@ Add-Type -AssemblyName System.Drawing
 
 ---
 
-## Despliegue
+## Publicar y despliegue
 
-Cada `push` a `main` dispara `.github/workflows/deploy.yml`, que compila y
-publica `dist/` en GitHub Pages.
+```bash
+git add -A
+git commit -m "descripcion"
+git push origin main
+```
 
-**Requisito:** en *Settings → Pages*, la fuente debe ser **GitHub Actions**.
+Ese push dispara `.github/workflows/deploy.yml`: instala, comprueba tipos,
+compila y publica `dist/` en GitHub Pages.
+
+### Si el push no publica: revisa esto
+
+1. **Pages puede no estar habilitado.** Es el fallo más probable y no se
+   arregla desde el código. En <https://github.com/JRafael1012/JRafael1012/settings/pages>
+   la fuente debe ser **GitHub Actions**. Se comprueba sin credenciales:
+   `has_pages` en `https://api.github.com/repos/JRafael1012/JRafael1012` debe
+   ser `true`; si es `false`, el repositorio no tiene Pages activo y
+   `deploy-pages` falla.
+2. **La URL correcta lleva subcarpeta**: `https://jrafael1012.github.io/JRafael1012/`.
+   `https://jrafael1012.github.io/` da 404 aunque todo esté bien, porque el
+   repositorio no es `JRafael1012.github.io`.
+3. **Ver los errores** en la pestaña *Actions* del repositorio. Cada paso va
+   separado (`sync`, `check`, `build`, artefacto, despliegue) para que se vea
+   en cuál falla.
 
 ### La ruta base
 
@@ -273,5 +308,12 @@ Las anclas (`#proyectos`) y las URLs externas no llevan el prefijo.
 
 ## Planes
 
-`plans/` contiene los planes de las fases 1 a 4 del modelo MIDEGS: dirección y
-viabilidad, requisitos, arquitectura y planificación.
+`plans/` sigue el modelo MIDEGS.
+
+- `plans/plan_midegs_completo.md` — fuente de verdad: decisiones (D1…D15) y las
+  10 fases con sus criterios de aceptación.
+- `plans/historial/` — los planes de las fases 1 a 4 tal como se escribieron
+  entonces: dirección y viabilidad, requisitos, arquitectura y planificación.
+
+Las decisiones no se duplican aquí: si algo ya está en el plan, el README lo
+enlaza en vez de repetirlo.
