@@ -1,32 +1,163 @@
 ---
-import { contacto } from '../data/perfil';
+import { ArrowRight, Mail, Github, Linkedin } from 'lucide-astro';
+import {
+  contacto,
+  correoUrl,
+  whatsappConfigurado,
+} from '../data/perfil';
+
+/**
+ * CONTACTO
+ * ---------------------------------------------------------------------------
+ * Rejilla de dos columnas —presentación y medios— con la llamada a la acción
+ * al pie, todo dentro de un marco.
+ *
+ * REUTILIZA, no reinventa
+ *   · El marco es la técnica de `.photo-frame` del Hero: filete de 1 px en
+ *     `--accent-2` y hueco asimétrico arriba y a la izquierda. Por eso el
+ *     área de contacto se lee como "un cuadro", igual que las fotos de arriba.
+ *   · El indicador de disponibilidad es el `.hero-placard` del Hero: mismo
+ *     borde ámbar al 38 %, fondo al 7 % y punto pulsante.
+ *   · El botón del CTA reutiliza `.btn--primary` del bloque 3.
+ *
+ * ICONOS
+ *   Mail, GitHub, LinkedIn y la flecha vienen de `lucide-astro`, ya en
+ *   `dependencies`: el SVG se incrusta en el HTML, así que no hay peticiones a
+ *   ningún CDN en runtime. Lucide dibuja con `stroke="currentColor"`, de modo
+ *   que el color lo pone el CSS.
+ *
+ *   WhatsApp es la excepción: Lucide retiró los iconos de marca, así que se
+ *   reutiliza tal cual el glifo que el Hero ya usa para WhatsApp. Es el mismo
+ *   sistema de iconos del sitio, no un SVG nuevo.
+ *
+ * ACCESIBILIDAD
+ *   • `aria-labelledby` apunta al H2 de esta sección, que nombra la sección entera. El único H1 del sitio sigue siendo el del Hero: aquí no se añade ninguno nuevo.
+ *   · Icono y flecha son decorativos (`aria-hidden`). El nombre accesible del
+ *     enlace es su texto visible, que ya dice plataforma, valor y descripción.
+ *     Poner un `aria-label` solo taparía ese texto al lector de pantalla.
+ *   · Si falta el número de WhatsApp, la tarjeta deja de ser enlace y se marca
+ *     con `aria-disabled`, para no dejar un `wa.me/` vacío que no lleva a nada.
+ *
+ * SIN JAVASCRIPT
+ *   El revelado progresivo es el del sitio: `.reveal` más el IntersectionObserver
+ *   de `public/js/main.js`. No hace falta nada más.
+ */
+const ICONOS_LUCIDE = { Mail, Github, Linkedin };
 ---
 
-<section class="section" id="contacto">
+<section class="section contact" id="contacto" aria-labelledby="contact-title">
   <div class="container">
-    <div class="section__head">
-      <p class="eyebrow">CONTACTO</p>
-      <h2 class="section__title">Hablemos</h2>
-      <p class="section__subtitle">
-        Disponible para nuevas oportunidades. El correo es la vía más rápida.
-      </p>
-    </div>
+    {/* El marco: mismo filete y mismo hueco asimétrico que `.photo-frame`. */}
+    <div class="contact-frame">
+      <div class="contact-grid">
+        {/* --- Columna de presentación --- */}
+        <div class="contact-intro">
+          <p class="eyebrow">CONTACTO</p>
 
-    <ul class="contact-list">
-      {
-        contacto.map((item) => (
-          <li class="contact-item reveal">
-            <span class="contact-label">{item.label}</span>
-            <a
-              href={item.href}
-              target={item.href.startsWith('http') ? '_blank' : undefined}
-              rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-            >
-              {item.valor}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+          <h2 class="contact-title" id="contact-title">Hablemos</h2>
+
+          <p class="contact-lead">
+            ¿Tienes una idea, proyecto u oportunidad?
+            <br />
+            Estoy disponible para nuevas oportunidades.
+            <br />
+            El correo es la vía más rápida.
+          </p>
+
+          {/* Mismo lenguaje visual que el `.hero-placard` del Hero. */}
+          <p class="contact-placard">
+            <span class="contact-placard__dot" aria-hidden="true"></span>
+            Normalmente respondo en 24–48 horas.
+          </p>
+
+          <p class="contact-motto">
+            <span>Conversemos sobre</span>
+            <span>ideas, código y el futuro</span>
+          </p>
+        </div>
+
+        {/* --- Columna de medios ---
+             Cada tarjeta es un solo <a>: icono, plataforma, valor, descripción
+             y flecha. Una sola parada de tabulación por medio y el objetivo
+             táctil es la tarjeta entera, no un texto suelto. */}
+        <ul class="contact-list">
+          {
+            contacto.map((item) => {
+              // `Whatsapp` no viene de Lucide, así que se descarta aquí y se
+              // pinta más abajo con el glifo del Hero.
+              const Ico =
+                item.icono && item.icono !== 'Whatsapp' ? ICONOS_LUCIDE[item.icono] : null;
+              const inactivo = item.icono === 'Whatsapp' && !whatsappConfigurado;
+
+              return (
+                <li
+                  class:list={[
+                    'contact-card',
+                    'reveal',
+                    {
+                      'contact-card--hero': item.destacado,
+                      'contact-card--inactive': inactivo,
+                    },
+                  ]}
+                >
+                  <a
+                    class="contact-card__link"
+                    href={item.href}
+                    aria-disabled={inactivo ? 'true' : undefined}
+                    target={item.href.startsWith('http') ? '_blank' : undefined}
+                    rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  >
+                    <span class="contact-card__icon" aria-hidden="true">
+                      {Ico && <Ico size={22} stroke-width={1.7} />}
+                      {item.icono === 'Whatsapp' && (
+                        /* Glifo copiado de `.hero-social__icon--whatsapp`
+                           del Hero: Lucide no trae iconos de marca. */
+                        <svg
+                          class="contact-card__glyph"
+                          viewBox="0 0 24 24"
+                          focusable="false"
+                        >
+                          <path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5Z" />
+                          <path d="M9 8.5c.3 2.7 2 4.5 4.8 5.4l1.2-1.3 2 .9c-.2 1.3-1.1 2-2.5 2-3.6-.2-6.9-3.5-7.1-7.1 0-1.3.7-2.2 2-2.5l.9 2L9 9.1" />
+                        </svg>
+                      )}
+                    </span>
+
+                    <span class="contact-card__body">
+                      <span class="contact-card__platform">{item.label}</span>
+                      <span class="contact-card__value">{item.valor}</span>
+                      {item.descripcion && (
+                        <span class="contact-card__desc">{item.descripcion}</span>
+                      )}
+                    </span>
+
+                    <span class="contact-card__go" aria-hidden="true">
+                      <ArrowRight size={20} stroke-width={1.7} />
+                    </span>
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </div>
+
+      {/* --- Llamada a la acción --- */}
+      <div class="contact-cta reveal">
+        <span class="contact-cta__icon" aria-hidden="true">
+          <Mail size={24} stroke-width={1.7} />
+        </span>
+
+        <p class="contact-cta__text">
+          <span class="contact-cta__lead">¿Prefieres escribirme directamente?</span>
+          <span class="contact-cta__hint">Haz clic y envíame un mensaje.</span>
+        </p>
+
+        <a class="btn btn--primary contact-cta__btn" href={correoUrl}>
+          <span>Envíame un mensaje</span>
+          <span class="btn__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
   </div>
 </section>

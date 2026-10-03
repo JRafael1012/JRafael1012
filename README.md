@@ -19,6 +19,7 @@ Sitio estático de una sola página, en español, construido con
 | Estilos | CSS puro | Un solo archivo, sin framework ni dependencias |
 | Tipografías | Inter + JetBrains Mono | Autoalojadas vía `@fontsource-variable`, sin peticiones a terceros |
 | Comportamiento | JavaScript nativo | ~3 KB, sin librería |
+| Iconos de interfaz | `lucide-astro` | Iconos SVG reales de Mail, GitHub, LinkedIn y flechas |
 | Logos del stack | Simple Icons + Devicon + SVG locales | 29 en ámbar (Simple Icons), 3 a color (Devicon), 5 en `public/img/logos/` |
 | Despliegue | GitHub Actions → Pages | Publica `dist/` en cada push a `main` |
 
@@ -28,7 +29,8 @@ Sitio estático de una sola página, en español, construido con
 
 ```
 PortafolioAstro/              Página única. Orden de las secciones:
-public/                       Hero → Stack → Trayectoria → Proyectos → Contacto
+public/                       Hero → Stack → Sobre mí → Trayectoria →
+                              Proyectos → Contacto
 ├── favicon.png              256×256, generado desde el logo
 ├── favicon-32.png           32×32
 ├── apple-touch-icon.png     180×180
@@ -44,17 +46,23 @@ public/                       Hero → Stack → Trayectoria → Proyectos → C
 └── js/
     └──     main.js              Revelado al hacer scroll, anclas, carrusel de
                          fotos del hero, galería de credenciales,
-                         collage de robótica y pausa del marquee
+                         collage de robótica, paneles plegables y pausa
+                         del marquee
 ├── src/
 │   ├── components/          Un componente por sección (solo marcado, sin CSS)
 │   │   ├── Header.astro
-│   │   ├── Hero.astro        Carrusel de 3 fotos y cartel de disponibilidad
+│   │   ├── Hero.astro        Carrusel de 3 fotos, cartel de disponibilidad,
+│   │   │                     línea de tecnologías clave y 4 botones
 │   │   ├── Stack.astro       Marquesina infinita de logos
+│   │   ├── SobreMi.astro     Seis preguntas plegables y propuesta de valor
 │   │   ├── Trayectoria.astro Timeline con línea que avanza al hacer scroll,
 │   │   │                     galería del diploma del SENA (Finovateh) y
 │   │   │                     collage de fotos de robótica
-│   │   ├── Proyectos.astro
-│   │   ├── Contacto.astro
+│   │   ├── Destacados.astro  Solo los proyectos con `destacado: true`,
+│   │   │                     tarjetas anchas imagen + texto
+│   │   ├── ProyectoCard.astro Tarjeta compartida de las dos secciones
+│   │   ├── Proyectos.astro   Todos los proyectos en la rejilla
+│   │   ├── Contacto.astro    Cuatro tarjetas de contacto + CTA de correo
 │   │   └── Footer.astro
 │   ├── data/
 │   │   └── perfil.ts        ← TODO el contenido del sitio
@@ -117,31 +125,180 @@ los componentes para cambiar textos.
 | Qué cambiar | Dónde |
 | --- | --- |
 | Nombre, cargo, ciudad, descripción | `perfil` |
+| Nombre corto del `<h1>` (por defecto «Rafael Arlant») | `perfil.nombreCorto` |
+| Tecnologías de la línea del hero | `perfil.tecnologiasClave` |
 | Enlaces del menú | `nav` |
 | Título y descripción del SEO | `perfil.meta` |
 | Ruta de la hoja de vida | `perfil.cv.href` |
+| Preguntas y respuestas de «Sobre mí» | `sobreMi` |
 | Formación y actividades | `experiencia` |
 | Tecnologías del marquee | `stack` |
 | Proyectos | `proyectos` |
-| Correo, GitHub, LinkedIn | `contacto` |
+| Correo, GitHub, LinkedIn, WhatsApp (datos editables) | `datosContacto` |
+| Tarjetas de contacto (textos y orden) | `contacto` |
+
+### Los botones del hero
+
+Son cuatro: **Conoce mis proyectos** (baja a `#proyectos`), **Descargar CV**,
+**GitHub** y **Contacto** (baja a `#contacto`). Los dos externos abren en una
+pestaña nueva. El enlace de GitHub se toma de `datosContacto.githubUrl` en
+`src/data/perfil.ts`.
+
+### «Sobre mí»: seis preguntas que se despliegan hacia la derecha
+
+Cada pregunta es un botón; al pulsarla su respuesta aparece **al lado**, y la
+pregunta se encoge. La primera arranca abierta. No hay JavaScript propio de la
+sección: usa el patrón `data-exp-toggle` + `aria-controls` que
+`public/js/main.js` ya tenía para «Ver experiencia» en la trayectoria. Para
+abrir otra de entrada por defecto, añade `data-exp-open` a su botón.
+
+**Las dos diferencias con un acordeón normal**, por si hay que tocarlo:
+
+1. Los botones de esta sección llevan **`data-exp-css`**. Es lo que permite
+   que el despliegue se anime: `display: none` no transiciona, así que el
+   estado no puede vivir en `hidden` sino en `visibility`, que sí se anima y
+   aun así saca el panel del tabulado y de los lectores de pantalla. El
+   atributo `hidden` sigue en el HTML para quien llegue sin JavaScript, y el
+   script lo quita en cuanto arranca. **Los paneles que no lleven
+   `data-exp-css` siguen funcionando igual que antes.**
+2. Hay un envoltorio extra, `.about-panel__inner`, que es el que recorta el
+   alto. Sin él el contenido seguiría marcando el alto y las seis filas
+   quedarían altas siempre.
+
+Dos mandos si quieres ajustar el ancho:
+
+| Qué cambiar | Dónde | Efecto |
+| --- | --- | --- |
+| Ancho total de las filas | `max-width` de `.about-list` (en `rem`) | **1 cm ≈ 2,36 rem.** Ahora `54rem` |
+| Reparto entre pregunta y respuesta | `1fr / 1.07fr` de `.about-item` | Más `fr` en la respuesta = más ancha |
+| Tope del texto | **no hay**, que el ancho lo manda la columna | Si lo añades, el texto se corta |
+
+Debajo de 700 px no cabe de lado y la respuesta vuelve a caer hacia abajo: solo
+se anima el alto.
+
+El orden de las preguntas es un arco y conviene mantenerlo: identidad → lo que
+resuelvo → la base técnica → lo que me interesa → qué quiero construir → qué
+busco. Quien solo lea los títulos ya se queda con el resumen.
+
+El texto y las etiquetas de la respuesta entran desde la derecha, el mismo
+sentido en que crece la columna. Las etiquetas de «¿Qué me interesa?» se abren
+además como una cortina de izquierda a derecha y entran escalonada. Si el
+sistema pide menos movimiento (`prefers-reduced-motion`), todo el despliegue
+sale instantáneo.
 
 ### Botones de redes sociales del hero
 
 Debajo de la foto de portada hay botones circulares con los logos de WhatsApp,
 Instagram, LinkedIn, Discord y Gmail. Los botones externos abren en una pestaña
-nueva; Gmail abre el cliente de correo. Los enlaces de LinkedIn y Gmail se toman
-de `contacto` en `src/data/perfil.ts`. Para cambiar WhatsApp, Instagram o Discord,
-edita la constante `redes` de `src/components/Hero.astro`.
+nueva; Gmail abre el cliente de correo. El hero busca LinkedIn y Correo dentro de
+`contacto` por su `label` y toma su `href`, así que el enlace sale de
+`datosContacto`. Para cambiar WhatsApp, Instagram o Discord (o reordenar los
+botones), edita la constante `redes` de `src/components/Hero.astro`.
 
 ### ⚠ Antes de publicar, revisa esto
 
 1. `stack` — **un logo es una afirmación.** Quita las tecnologías que no
    manejes: quien lo ve da por hecho que sí.
 2. Coloca tu hoja de vida en `public/cv.pdf`.
-3. `proyectos[].enlace.url` apunta al perfil de GitHub, no a repositorios.
+3. `proyectos[].enlace.url` apunta al perfil de GitHub, no a repositorios. **RESUELTO en D21:** los cuatro proyectos inventados se borraron y ahora los enlaces van a repositorios reales.
 4. Añade `public/img/diploma-tecnico.jpg` y `public/img/entrega-diploma.jpg`
    para llenar los dos huecos de la galería, y borra `public/img/foto.jpg`
    cuando ya no la uses.
+
+### Los botones de contacto
+
+Contacto **ya no reutiliza `.nav-cv`** del header: es un diseño propio (D24). Los
+botones de «Hoja de vida» del header y los de esta sección son independientes y
+cambian por separado.
+
+Los cuatro medios de contacto se generan desde el array `contacto` en
+`src/data/perfil.ts`. Cada tarjeta es un `<a>` completo (`.contact-card`), con
+plataforma, valor, descripción corta y flecha:
+
+1. **Correo** — destacado, con borde ámbar y degradado `--accent` → `--accent-2`.
+2. **GitHub** — valor desde `datosContacto.githubUrl`.
+3. **LinkedIn** — valor desde `datosContacto.linkedinUrl`.
+4. **WhatsApp** — número desde `datosContacto.whatsappNumber`; la tarjeta se
+   oculta (`aria-disabled`) si el número está vacío.
+
+Los tres datos editables viven en el bloque `datosContacto` del mismo archivo:
+
+- `email` — dirección y `mailto:` del botón principal.
+- `githubUrl` / `githubUsername` — enlace y texto visible.
+- `linkedinUrl` — enlace a tu perfil.
+- `whatsappNumber` — solo el número, sin `+` ni espacios (ej. `573238176273`);
+  el enlace `https://wa.me/...` y el texto `+57 323 817 6273` se calculan solos.
+
+El mensaje de WhatsApp está en `datosContacto.whatsappMessage` y se codifica con
+`encodeURIComponent`, así que los acentos y signos no rompen la URL.
+
+El botón inferior (`¿Prefieres escribirme directamente?` → «Envíame un mensaje») y
+la tarjeta de correo usan `correoUrl`, que es un `mailto:` y **no** abre pestaña.
+GitHub, LinkedIn y WhatsApp abren en pestaña nueva con
+`rel="noopener noreferrer"`.
+
+Los valores largos llevan `overflow-wrap: anywhere` para no desbordarse en móvil.
+
+### Dos secciones de proyectos, no una
+
+`proyectos` alimenta **dos secciones independientes** del mismo array:
+
+1. **`#destacados` — "Proyectos destacados"** (`Destacados.astro`). Los que
+   llevan `destacado: true`, en tarjetas anchas de una columna: captura a la
+   izquierda, texto a la derecha. Va **antes** en la página, para que quien
+   entra vea primero lo mejor.
+2. **`#proyectos` — "Todos los proyectos"** (`Proyectos.astro`). **Todos**,
+   los destacados incluidos, en la rejilla de `.card-grid`. Aquí no se filtran.
+
+Que un proyecto esté en las dos secciones es lo normal: la tarjeta destacada es
+una llamada y la completa da el detalle. Ambas usan el mismo componente,
+`src/components/ProyectoCard.astro`; la segunda lo llama sin `destacada`, y por
+eso sale en la rejilla y no a ancho completo.
+
+Hay una entrada de nav para cada una: **Destacados** y **Proyectos**. El nav
+lleva `flex-wrap: wrap`, así que el sexto enlace envuelve en vez de desbordar.
+
+**Todo menos el título está vacío a propósito.** Cada campo es opcional y la
+tarjeta dibuja solo el que exista: `descripcion`, `problema`, `stack`,
+`funcionalidades`, `participacion`, `estado`, `imagen`, `repositorio`, `demo`.
+Un dato que no tienes **no se inventa ni se disimula**, simplemente no sale.
+
+**El hueco de la imagen se reserva siempre**, tenga foto o no: `aspect-ratio`
+fija la altura y el hueco vacío mide exactamente lo mismo que la captura, así
+que la tarjeta no da saltos cuando la añadas. Lo decides así a propósito: los
+proyectos se llenarán más adelante y el espacio se queda reservado mientras
+tanto. Con la foto puesta:
+
+```ts
+imagen: 'img/proyectos/finovatech.webp'   // dentro de public/
+```
+
+Se acepta con o sin barra inicial (`'/img/...'` y `'img/...'`). **Importante:**
+`withBase()` solo antepone el `base` de GitHub Pages a rutas que empiezan por
+`/`, y sin él una ruta relativa devolvería 404 en `usuario.github.io`. Por eso
+`ProyectoCard.astro` normaliza la ruta antes de usarla: si le pones la imagen
+sin la barra inicial, funciona igual.
+
+**Los botones solo salen con URL real.** Sin `demo` ni `repositorio`, la tarjeta
+se queda sin botones; nunca se enlaza al perfil de GitHub para rellenar el hueco
+(ver D21). Se llaman «Ver proyecto» (apunta a `demo`) y «GitHub» (apunta a
+`repositorio`), y ambos abren en pestaña nueva con `rel="noopener noreferrer"`.
+
+Los botones son propios, `.project-card__btn`, en vez de reutilizar `.btn`: los
+del hero miden 56 px con 30 px de hueco y aquí van dos en paralelo y más
+pequeños. El lenguaje visual es el mismo — primario con relleno `accent`,
+secundario solo con borde — y el `min-height` es de 44 px, el objetivo táctil
+mínimo. El elevamiento va dentro de `@media (hover: hover)` para que en táctil
+no quede un estado pegado después de tocar.
+
+**El tercer destacado es provisional.** Hay tres tarjetas marcadas, pero
+«RAF VESTIGIA» salió de la lista de candidatos del documento de contenido, no de
+los datos del sitio; en `experiencia` la robótica figura como «Robótica» en
+Fundación Biosbot Robótica. Confirma el nombre o bórralo.
+
+**Faltan proyectos.** El objetivo son 8 en la sección completa y 3 destacados, y
+ahora mismo hay **3 confirmados**. La estructura ya aguanta los 8: se añaden al
+array y aparecen solas, sin tocar los componentes.
 
 ### La marquesina de logos
 
@@ -180,7 +337,7 @@ https://cdn.simpleicons.org/<slug>/ffba08
 **Todo el CSS está en `src/styles/global.css`** (~14 KB). Ningún componente
 `.astro` lleva estilos dentro.
 
-El archivo está divided en diez bloques numerados y comentados:
+El archivo está dividido en once bloques numerados y comentados:
 
 | Bloque | Contenido |
 | --- | --- |
@@ -191,9 +348,10 @@ El archivo está divided en diez bloques numerados y comentados:
 | 5 | Hero |
 | 6 | Trayectoria |
 | 7 | Stack: marquesina infinita de logos |
-| 8 | Proyectos |
-| 9 | Contacto |
-| 10 | Footer |
+| 8 | Sobre mí: preguntas plegables y propuesta de valor |
+| 9 | Proyectos |
+| 10 | Contacto: fondo del hero, marco, tarjetas de contacto y CTA |
+| 11 | Footer |
 
 ### Cambiar los colores de todo el sitio
 
@@ -208,7 +366,14 @@ cálido. Para cambiar la marca global lo normal es ajustar los tres acentos:
 
 ### Breakpoints
 
-Dos, y coinciden en todos los bloques: **1050 px** y **700 px**.
+Dos, y coinciden en casi todos los bloques: **1050 px** y **700 px**.
+
+Excepción conocida, sin arreglar: el bloque 11 (Footer, `800px` y `520px`) usa
+cortes propios. Se nota entre 700 y 800 px, donde el resto ya va en layout móvil y
+ese bloque todavía va a dos columnas.
+
+El bloque 10 (Contacto) sí usa los cortes globales, más un tercero a **420 px**
+para móvil pequeño.
 
 ### Accesibilidad
 

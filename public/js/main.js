@@ -97,7 +97,9 @@
 
   /* --- 4. Botón que despliega las competencias y torneos --- */
   /* Cada botón apunta a su panel con `aria-controls`, así que el bloque es
-     el mismo aunque se añadan más secciones plegables. */
+     el mismo aunque se añadan más secciones plegables. Con `data-exp-open`
+     el panel empieza abierto, que es lo que necesita "Sobre mí" para que la
+     primera respuesta se lea sin tocar nada. */
   var expToggles = document.querySelectorAll('[data-exp-toggle]');
 
   expToggles.forEach(function (toggle) {
@@ -107,9 +109,24 @@
 
     if (!panel) return;
 
+    /* `data-exp-css`: el estado lo lleva el CSS leyendo `aria-expanded` en vez
+       de `hidden`. Lo necesitan los paneles que se abren de lado, porque con
+       `display: none` no hay nada que transicionar. El `hidden` del HTML se
+       quita una sola vez —para quien llegue sin JavaScript— y a partir de ahí
+       manda `visibility`, que sí saca el panel del tabulado y de los lectores
+       de pantalla. El resto de paneles sigue igual que antes. */
+    var usaCss = toggle.hasAttribute('data-exp-css');
+
+    if (usaCss) {
+      panel.hidden = false;
+    }
+
     var setOpen = function (open) {
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      panel.hidden = !open;
+
+      if (!usaCss) {
+        panel.hidden = !open;
+      }
 
       if (label) {
         label.textContent = open ? cerrado.replace(/^Ver/, 'Ocultar') : cerrado;
@@ -122,7 +139,7 @@
       setOpen(toggle.getAttribute('aria-expanded') !== 'true');
     });
 
-    setOpen(false);
+    setOpen(toggle.hasAttribute('data-exp-open'));
   });
 
   /* --- 5. Fotos del diploma y su entrega --- */

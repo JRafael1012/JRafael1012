@@ -1,0 +1,33 @@
+---
+import { proyectos } from '../data/perfil';
+import ProyectoCard from './ProyectoCard.astro';
+
+/**
+ * Sección "Proyectos destacados" — los 3 mejores, en tarjetas anchas.
+ *
+ * Es una sección APARTE de "Proyectos", no un bloque dentro de ella: el
+ * visitante ve primero lo mejor y luego, más abajo, la lista completa.
+ * Solo entra lo que lleva `destacado: true`.
+ */
+const destacados = proyectos.filter((proyecto) => proyecto.destacado);
+---
+
+<section class="section" id="destacados">
+  <div class="container">
+    <div class="section__head">
+      <p class="eyebrow">DESTACADOS</p>
+      <h2 class="section__title">Proyectos destacados</h2>
+      <p class="section__subtitle">
+        Los que mejor resumen lo que sé hacer.
+      </p>
+    </div>
+
+    <div class="destacados__grid">
+      {
+        destacados.map((proyecto, i) => (
+          <ProyectoCard proyecto={proyecto} destacada indice={i + 1} />
+        ))
+      }
+    </div>
+  </div>
+</section>

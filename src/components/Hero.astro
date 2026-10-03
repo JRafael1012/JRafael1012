@@ -5,6 +5,7 @@ import { withBase } from '../paths';
 const fotos = ['/img/foto1.jpeg', '/img/foto2.jpeg', '/img/foto3.png'];
 const linkedin = contacto.find((item) => item.label === 'LinkedIn');
 const correo = contacto.find((item) => item.label === 'Correo');
+const github = contacto.find((item) => item.label === 'GitHub');
 const redes = [
   {
     nombre: 'WhatsApp',
@@ -36,7 +37,7 @@ const redes = [
       </div>
 
       <div class="hero-heading">
-        <h1 class="hero-name">{perfil.nombre}</h1>
+        <h1 class="hero-name">{perfil.nombreCorto}</h1>
       </div>
 
       <p class="hero-tagline">
@@ -47,7 +48,9 @@ const redes = [
       <p class="hero-role">{perfil.rol}</p>
       <p class="hero-subrole">{perfil.subtitulo}</p>
 
-      <p class="hero-description">{perfil.descripcion}</p>
+      <p class="hero-techs">
+        {perfil.tecnologiasClave.join(' · ')}
+      </p>
 
       <div class="hero-buttons">
         <a href="#proyectos" class="btn btn--primary">
@@ -57,6 +60,18 @@ const redes = [
         <a href={withBase(`/${perfil.cv.href}`)} class="btn">
           Descargar CV
           <span class="btn__arrow" aria-hidden="true">↗</span>
+        </a>
+        {
+          github && (
+            <a href={github.href} class="btn" target="_blank" rel="noopener noreferrer">
+              GitHub
+              <span class="btn__arrow" aria-hidden="true">↗</span>
+            </a>
+          )
+        }
+        <a href="#contacto" class="btn">
+          Contacto
+          <span aria-hidden="true">↓</span>
         </a>
       </div>
 
@@ -97,16 +112,6 @@ const redes = [
               ))
             }
           </div>
-          <button
-            class="photo-toggle"
-            type="button"
-            data-photo-toggle
-            aria-pressed="false"
-            hidden
-          >
-            <span class="photo-toggle__icon" aria-hidden="true">❚❚</span>
-            <span data-photo-toggle-label>Pausar fotos</span>
-          </button>
           <p class="photo-caption">{perfil.fotoCaption}</p>
         </div>
         <nav class="hero-socials" aria-label="Redes y contacto">

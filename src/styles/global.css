@@ -19,9 +19,10 @@
      5.  Hero ................ portada con texto, foto y decorados
      6.  Trayectoria ......... lista de experiencia laboral
      7.  Stack ............... tarjetas de tecnologías
-     8.  Proyectos ........... tarjetas de proyectos
-     9.  Contacto ............ lista de medios de contacto
-     10. Footer .............. pie de página
+     8.  Sobre mí ............ preguntas plegables y propuesta de valor
+     9.  Proyectos ........... tarjetas de proyectos
+     10. Contacto ............ marco, medios de contacto y llamada a la acción
+     11. Footer .............. pie de página
 
    VARIABLES DE ENTORNO
      · Los breakpoints son 1050 px y 700 px. Deben coincidir con los
@@ -410,7 +411,7 @@ a:hover {
   border: 1px solid var(--line);
   background: color-mix(in srgb, var(--oxblood) 22%, transparent);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.4px;
   padding: 0.25rem 0.6rem;
   white-space: nowrap;
@@ -544,12 +545,23 @@ a:hover {
   text-decoration: none;
 }
 
+/* Boton outlined. Vive en el header ("Hoja de vida") y lo reutiliza tambien
+   Contacto.astro (D22), asi que el hover se declara una sola vez aqui para
+   que los dos sean el mismo boton y no dos parecidos. */
 .nav-cv {
   border: 1px solid #647087;
   padding: 17px 20px;
   display: inline-flex;
   align-items: center;
   gap: 18px;
+}
+
+@media (hover: hover) {
+  .nav-cv:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-2);
+    text-decoration: none;
+  }
 }
 
 @media (max-width: 1050px) {
@@ -569,7 +581,7 @@ a:hover {
   }
 
   .nav-links a {
-    font-size: 13px;
+font-size: 11px;
   }
 
   .nav-cv {
@@ -592,8 +604,8 @@ a:hover {
      · .hero-tagline ... "Software que resuelve."; el <span> va en rojo
      · .hero-role ...... carrera (color amarillo)
      · .hero-subrole ... subcargo (gris)
-     · .hero-description  párrafo de presentación
-     · .hero-buttons .... los dos botones
+     · .hero-techs ..... tecnologías clave, en monoespaciada
+     · .hero-buttons .... los cuatro botones
      · .hero-meta ...... ciudad y áreas, con punto y separador
      · .hero-visual .... columna de la foto
      · .hero-coords .... coordenadas, posicionadas sobre la foto
@@ -601,6 +613,7 @@ a:hover {
      · .photo .......... la imagen, encaja con object-fit
      · .photo-caption .... franja de texto al pie de la foto
      · .hero-badge ...... círculo "Software" superpuesto
+      · .hero-placard .... cartel "Disponible para trabajar", sobre la foto
 
    RESPONSIVE
      1050 px .... las dos columnas se apilan
@@ -659,7 +672,7 @@ a:hover {
      .hero-name ...... el nombre, 84 px como mucho
      .hero-tagline ... la frase, 51 px
      .hero-role ...... carrera y subcargo, 16 px
-     .hero-description 18 px
+     .hero-techs ..... las tecnologías clave, 12 px
 
    El nombre es el elemento más grande porque es lo primero que alguien
    necesita saber: quién es. La frase viene después, en segundo plano. */
@@ -705,13 +718,13 @@ a:hover {
 /* --- Estado de disponibilidad junto al antetítulo --- */
 .hero-placard {
   position: absolute;
-  top: -2.5cm;
+  top: -1.8cm;
   right: 10px;
   z-index: 5;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: calc(12px + 0.25cm) calc(17px + 0.25cm);
+  gap: 10px;
+  padding: calc(10px + 0.25cm) calc(15px + 0.25cm);
   border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
   background: color-mix(in srgb, var(--accent) 7%, var(--bg));
   animation: placard-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
@@ -730,8 +743,8 @@ a:hover {
 
 /* El punto palpitante refuerza el estado sin competir con el titular. */
 .hero-placard-dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   background: var(--accent);
   flex: none;
@@ -751,7 +764,7 @@ a:hover {
 
 .hero-placard-text {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.4px;
@@ -785,11 +798,16 @@ a:hover {
   margin-bottom: 24px;
 }
 
-.hero-description {
-  color: var(--muted);
+/* La línea de tecnologías clave va en monoespaciada, como el resto de
+   etiquetas del sitio, para que se lea como dato y no compita con el
+   titular. El separador "·" ya viene en el texto, no se pone con CSS. */
+.hero-techs {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  line-height: 1.9;
   max-width: 62ch;
-  font-size: 18px;
-  line-height: 1.75;
   margin-bottom: 31px;
 }
 
@@ -1087,9 +1105,8 @@ a:hover {
     letter-spacing: -1.5px;
   }
 
-  .hero-description {
-    font-size: 16px;
-    line-height: 1.7;
+  .hero-techs {
+    font-size: 11px;
   }
 
   .hero-buttons {
@@ -1982,91 +1999,1178 @@ a:hover {
   }
 }
 
-
 /* ============================================================
-   8. PROYECTOS
+   8. SOBRE MÍ
    ------------------------------------------------------------
-   Tarjetas de los proyectos, cada una con título, descripción,
-   tecnologías y un enlace opcional.
+   Seis preguntas plegables. La respuesta NO cae hacia abajo:
+   se despliega HACIA LA DERECHA, en dos columnas —la pregunta
+   a la izquierda, la respuesta a la derecha— y al abrirse una,
+   la pregunta se encoge. Debajo de 700 px no cabe de lado y
+   vuelve a caer hacia abajo, que es lo único que cambia.
+
+   CÓMO SE LOGRA, Y POR QUÉ ES EL CAMBIO MÁS DELICADO DEL SITIO:
+
+   1. Cada fila es un grid de dos columnas. La segunda pista va de
+      `0fr` a `1.07fr` (51,7 % del ancho de una fila de 864 px, unos
+      447 px de columna). `fr` sí se puede interpolar, así que la
+      columna crece en horizontal en lugar de saltar de golpe, y la
+      pregunta se encoge a la vez.
+
+   2. El alto se colapsa aparte, en el propio panel, con su propio
+      grid de una fila que va de `0fr` a `1fr`. Hace falta un
+      envoltorio intermedio (`.about-panel__inner`) porque es el
+      que lleva `overflow: hidden`: sin él, el contenido seguiría
+      marcando el alto y las seis filas quedarían altas siempre.
+
+   3. `visibility` sustituye a `hidden` para cerrar. Con
+      `display: none` no hay nada que transicionar; con
+      `visibility: hidden` el panel sale igual del tabulado y de
+      los lectores de pantalla, pero se puede animar. El atributo
+      `hidden` se queda en el HTML para quien llegue sin JavaScript
+      y el script lo quita en cuanto arranca — es lo que hace
+      `data-exp-css` en main.js.
+
+   El borde izquierdo lo lleva ahora la fila entera y no el botón:
+   así la línea ámbar es continua por los dos lados en vez de
+   tener que fingir que el panel lo continúa.
 
    CLASES
-     .project-card ..... modifica .card; título un poco mayor
-     .project-summary . la descripción
-     .project-link .... enlace "Repositorio ↗"
+     .about-list ........ el <ul> de las seis filas
+     .about-item ........ UNA FILA = pregunta + respuesta
+     .about-item__head .. el <h3> que envuelve al botón
+     .about-toggle ..... el botón: número, pregunta y flecha
+     .about-toggle__index el número 01-06, en monoespaciada
+     .about-toggle__icon la flecha; gira 180° al abrirse
+     .about-panel ...... la respuesta; colapsa en alto y ancho
+     .about-panel__inner el envoltorio que recorta el alto
+     .about-panel__text la respuesta escrita
+     .about-value ...... la propuesta de valor, siempre visible
 
-   Reutiliza .card, .card-grid y .tag-list de la sección 3.
+   EN MÓVIL (700 px) el segundo ejemplo vale: la respuesta se
+   apila debajo, en una sola columna, y solo se anima el alto.
 
-   USADO POR: Proyectos.astro.
+   USADO POR: SobreMi.astro.
    ============================================================ */
-.project-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.6rem;
+.about-list {
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+  /* 54 rem = 864 px. Es el mando del ancho: antes era 74ch, que con la
+     fuente cargada daba entre 590 y 710 px según el navegador. */
+  max-width: 54rem;
 }
 
-.project-summary {
-  color: var(--muted);
-  margin-bottom: 1.25rem;
+/* UNA FILA. El grid de dos columnas es lo que hace el despliegue
+   lateral; `:has()` lee el estado desde el botón para no depender
+   de una clase extra en el HTML. */
+.about-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 0fr;
+  border: 1px solid var(--line);
+  /* El que se pinta al abrirse. transparente = mismo grosor siempre. */
+  border-left: 2px solid transparent;
+  background: color-mix(in srgb, var(--bg-raise) 50%, transparent);
+  /* `grid-template-columns` es LA transición que hace el efecto lateral: sin
+     esta línea la columna salta de 0fr a 1.05fr de golpe y la respuesta
+     aparece entera en vez de crecer hacia la derecha de la pregunta.
+     Es interpolable porque ambas pistas son `<flex>`. */
+  transition:
+    grid-template-columns 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    border-color 0.22s ease,
+    background-color 0.22s ease;
 }
 
-.project-link {
-  display: inline-flex;
+.about-item:has(.about-toggle[aria-expanded='true']) {
+  /* 1.07fr sobre 1fr = 51,7 % para la respuesta. Con 1.05fr eran 51 % y el
+     texto se quedaba corto; el reparto es el mando del ancho. */
+  grid-template-columns: minmax(0, 1fr) 1.07fr;
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+  border-left-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+/* La pregunta es el único elemento siempre visible de cada fila. */
+.about-item__head {
+  margin: 0;
+  align-self: center;
+  font-size: 1rem;
+}
+
+.about-toggle {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
-  margin-top: 1.5rem;
+  gap: 1.25rem;
+  width: 100%;
+  padding: 1.15rem 1.4rem;
+  border: 0;
+  background: none;
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 1.05rem;
   font-weight: 700;
-  font-size: 14px;
-  color: var(--accent);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-align: left;
+  cursor: pointer;
 }
 
-.project-link:hover {
+@media (hover: hover) {
+  .about-toggle:hover {
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+  }
+}
+
+.about-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* El número va en monoespaciada, como los periodos de la trayectoria. */
+.about-toggle__index {
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  transition:
+    color 0.22s ease,
+    transform 0.22s ease;
+}
+
+.about-toggle__icon {
+  display: flex;
+  color: var(--accent);
+  transition: transform 0.22s ease;
+}
+
+.about-toggle__icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.about-toggle[aria-expanded='true'] .about-toggle__index {
   color: var(--white);
 }
 
+.about-toggle[aria-expanded='true'] .about-toggle__icon {
+  transform: rotate(180deg);
+}
+
+@media (hover: hover) {
+  .about-toggle:hover .about-toggle__index {
+    color: var(--white);
+    transform: translateX(3px);
+  }
+}
+
+/* LA RESPUESTA. Grid de una fila que colapsa: `0fr` cerrado, `1fr`
+   abierto. La transición va también en el estado abierto, porque
+   si no el navegador solo animaría al cerrar. */
+.about-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.4s ease,
+    visibility 0s linear 0.5s;
+}
+
+/* El envoltorio que recorta. Sin `min-height: 0` el contenido
+   seguiría marcando el alto y la fila no se plegaría. */
+.about-panel__inner {
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 1.4rem;
+  transition: padding 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.about-item:has(.about-toggle[aria-expanded='true']) .about-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.5s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.4s ease 0.08s,
+    visibility 0s;
+}
+
+.about-item:has(.about-toggle[aria-expanded='true']) .about-panel__inner {
+  padding: 0.2rem 1.4rem 1.5rem;
+}
+
+/* Sin JavaScript el panel trae `hidden` y gana a este bloque. */
+.about-panel[hidden] {
+  display: none;
+}
+
+.about-panel__text {
+  /* Sin `max-width`: el ancho lo manda la columna, que es justo lo que se
+     está animando. Con un tope de 46ch el texto se cortaba antes de
+     aprovechar el espacio nuevo. A 0.98 rem sale a ~66 caracteres por línea,
+     que es lo justo para leer. */
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.8;
+  /* Entra desde la derecha, el mismo sentido en que crece la columna. Si el
+     texto apareciera quieto mientras la caja se abre, se leería como un
+     parpadeo en mitad del despliegue. */
+  animation: about-slide-right 0.5s cubic-bezier(0.33, 1, 0.68, 1) 0.08s both;
+}
+
+/* --- La apertura de las etiquetas --- */
+/* Las etiquetas de "¿Qué me interesa?" se abren como una cortina de
+   izquierda a derecha y luego entran una detrás de otra. Los retardos
+   arrancan antes que en la versión vertical: la caja ya está creciendo
+   hacia la derecha y las etiquetas tienen que ir llegando mientras crece,
+   no aparecer cuando ya ha terminado. */
+.about-panel .tag-list {
+  margin-top: 1.35rem;
+  animation: about-wipe 0.6s cubic-bezier(0.33, 1, 0.68, 1) 0.1s both;
+}
+
+.about-panel .tag {
+  animation: about-slide-right 0.42s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+/* Escalonado: cada etiqueta espera a la anterior. 60 ms es suficiente
+   para que se lea el orden y no tanto que se haga lento. */
+.about-panel .tag:nth-child(1) { animation-delay: 140ms; }
+.about-panel .tag:nth-child(2) { animation-delay: 200ms; }
+.about-panel .tag:nth-child(3) { animation-delay: 260ms; }
+.about-panel .tag:nth-child(4) { animation-delay: 320ms; }
+.about-panel .tag:nth-child(5) { animation-delay: 380ms; }
+.about-panel .tag:nth-child(6) { animation-delay: 440ms; }
+.about-panel .tag:nth-child(7) { animation-delay: 500ms; }
+.about-panel .tag:nth-child(8) { animation-delay: 560ms; }
+
+@keyframes about-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes about-slide-right {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Las etiquetas de "¿Qué me interesa?" sí se resaltan, como en la
+   trayectoria, pero sin el salto: aquí no hay lista de logos. */
+@media (hover: hover) {
+  #sobre-mi .tag:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 13%, var(--bg));
+    color: var(--accent);
+  }
+}
+
+/* La propuesta de valor va siempre desplegada y con más presencia: es el
+   cierre de la sección y lo que el usuario quiere leer sí o sí. */
+.about-value {
+  margin-top: 2.75rem;
+  padding: 1.85rem 2rem;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.about-value__label {
+  margin-bottom: 0.8rem;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.about-value__text {
+  max-width: 60ch;
+  color: var(--white);
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+/* Si el sistema pide menos movimiento, el despliegue es instantáneo:
+   el contenido es el mismo, solo sin la transición. */
+@media (prefers-reduced-motion: reduce) {
+  .about-item,
+  .about-panel,
+  .about-panel__inner {
+    transition: none;
+  }
+
+  .about-panel__text,
+  .about-panel .tag-list,
+  .about-panel .tag {
+    animation: none;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Aquí no cabe de lado: una sola columna y la respuesta debajo.
+     Solo queda por animar el alto.
+
+     El selector del estado abierto tiene que repetirse aquí porque, con
+     menos especificidad que `.about-item:has(...)`, no lo ganaría: sin esto
+     el móvil seguiría partiéndose en dos columnas. */
+  .about-item,
+  .about-item:has(.about-toggle[aria-expanded='true']) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about-item__head {
+    grid-area: 1 / 1;
+  }
+
+  .about-panel {
+    grid-area: 2 / 1;
+  }
+
+  .about-toggle {
+    grid-template-columns: 1.9rem minmax(0, 1fr) auto;
+    gap: 0.85rem;
+    padding: 1rem 1.1rem;
+    font-size: 0.98rem;
+  }
+
+  .about-panel__inner {
+    padding: 0 1.1rem;
+  }
+
+  .about-item:has(.about-toggle[aria-expanded='true']) .about-panel__inner {
+    padding: 0.15rem 1.1rem 1.35rem;
+  }
+
+  .about-panel__text {
+    font-size: 0.94rem;
+  }
+
+  .about-value {
+    padding: 1.45rem 1.35rem;
+  }
+
+  .about-value__text {
+    font-size: 1rem;
+  }
+}
 
 /* ============================================================
-   9. CONTACTO
+   9. PROYECTOS
    ------------------------------------------------------------
-   Lista de medios de contacto. Cada medio es una fila con su
-   etiqueta a la izquierda y el valor enlazado a la derecha.
+   Dos secciones independientes que comparten tarjeta:
+
+   - "Proyectos destacados" (Destacados.astro): los 3 mejores, en
+     tarjetas anchas de una columna.
+   - "Proyectos" (Proyectos.astro): la lista completa, en la
+     rejilla .card-grid.
+
+   El hueco de la imagen se reserva SIEMPRE con aspect-ratio, haya
+   foto o no, para que la tarjeta no cambie de altura cuando se
+   añada la captura.
+
+   Los botones son propios (.project-card__btn) en vez de reutilizar
+   .btn porque los del hero miden 56px con hueco de 30px, y aquí
+   hacen falta dos en paralelo y mas pequenos. Mismo lenguaje visual:
+   primario = relleno accent, secundario = solo borde.
 
    CLASES
-     .contact-list ..... envoltura <ul>
-     .contact-item .... una fila, con borde inferior
-     .contact-label ... la etiqueta (Correo, GitHub, LinkedIn)
-     .contact-item a .. el valor, en negrita
+     .destacados__grid .... columna de tarjetas anchas
+     .project-card ......... tarjeta; anula el padding de .card
+     .project-card--wide .... variante ancha, 2 columnas
+     .project-card__media ... hueco de la imagen
+     .project-card__img ..... la captura
+     .project-card__slot .... hueco vacio, misma medida que la foto
+     .project-card__slot-mark / __slot-text
+     .project-card__body .... contenido con su padding
+     .project-card__head .... titulo + estado
+     .project-card__title ... nombre del proyecto
+     .project-card__estado .. etiqueta de estado
+     .project-card__desc .... descripcion
+     .project-card__block ... grupo etiqueta + contenido
+     .project-card__label ... micro-etiqueta monoespaciada
+     .project-card__text .... problema o participacion
+     .project-card__features  lista de funcionalidades
+     .project-card__actions . contenedor de los botones
+     .project-card__btn .... un boton
+     .project-card__btn--primary
+     .project-card__btn-arrow
+     .project-card__hint .... nota de captura pendiente
+
+   Reutiliza .card, .card-grid, .tag-list y .tag de la seccion 3.
+
+   USADO POR: Destacados.astro, Proyectos.astro y ProyectoCard.astro.
+   ============================================================ */
+
+.destacados__grid {
+  display: grid;
+  gap: 2rem;
+}
+
+/* --- Tarjeta ---
+   .card trae padding de 1.75rem; aqui se anula porque la imagen
+   va a sangre contra el borde de la tarjeta. El padding lo pone
+   .project-card__body. */
+.project-card {
+  padding: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+/* --- Hueco de la imagen ---
+   aspect-ratio fija la altura aunque no haya foto, y el marco
+   vacio mide exactamente lo mismo que la foto. */
+.project-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.project-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Hueco vacio: se queda en silencio a proposito. Sin rayas ni iconos: solo
+   una linea de monoespaciada con dos filetes a los lados, como una linea
+   editorial. Un hueco debe leerse como "aun sin captura", no como error. */
+.project-card__slot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.project-card__slot-text {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.project-card__slot-text::before,
+.project-card__slot-text::after {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: color-mix(in srgb, var(--muted) 42%, transparent);
+}
+
+/* --- Contenido ---
+   La version de rejilla es la compacta: menos aire y una proporcion
+   algo mas corta, para que la lista completa lea como un catalogo y
+   no como una repeticion de los destacados. */
+.project-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.4rem;
+}
+
+.project-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+}
+
+.project-card__index {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.project-card__title {
+  font-size: 1.15rem;
+  line-height: 1.25;
+  flex: 1 1 auto;
+}
+
+.project-card__estado {
+  flex-shrink: 0;
+  align-self: center;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--line);
+  padding: 0.22rem 0.5rem;
+  white-space: nowrap;
+}
+
+.project-card__desc {
+  color: var(--muted);
+}
+
+.project-card__block {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.project-card__label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+
+.project-card__text {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.project-card__features {
+  display: grid;
+  gap: 0.4rem;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.project-card__features li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.6rem;
+}
+
+.project-card__features li::before {
+  content: '▸';
+  color: var(--accent);
+}
+
+.project-card__hint {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  word-break: break-word;
+}
+
+.project-card__hint code {
+  color: var(--accent-2);
+}
+
+/* --- Botones ---
+   min-height de 44px: objetivo tactil minimo (WCAG 2.2). El
+   elevamiento va dentro de @media (hover: hover) para que en
+   tactil no quede un estado pegado tras tocar. */
+.project-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.35rem;
+}
+
+.project-card__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0 1.15rem;
+  border: 1px solid #5d687b;
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.project-card__btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ink-black);
+}
+
+.project-card__btn-arrow {
+  transition: transform 0.2s ease;
+}
+
+@media (hover: hover) {
+  .project-card__btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-2);
+    text-decoration: none;
+  }
+
+  .project-card__btn--primary:hover {
+    border-color: var(--accent-2);
+  }
+
+  .project-card__btn:hover .project-card__btn-arrow {
+    transform: translate(2px, -2px);
+  }
+}
+
+.project-card__actions + .project-card__hint {
+  margin-top: -0.4rem;
+}
+
+/* --- Destacada ---
+   Ocupa toda la fila y se parte en dos columnas: la captura a la
+   izquierda, el texto a la derecha. Mas aire y mas tamano de
+   tipografia: es la escala de "esto es lo mejor". Se apila por
+   debajo de 1050px. */
+.project-card--wide .project-card__body {
+  gap: 1.15rem;
+  padding: 2.25rem;
+}
+
+.project-card--wide .project-card__title {
+  font-size: 1.5rem;
+}
+
+.project-card--wide .project-card__media {
+  aspect-ratio: 16 / 9;
+  border-bottom: 0;
+  border-right: 1px solid var(--line);
+}
+
+@media (min-width: 1050px) {
+  .project-card--wide {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    grid-template-rows: 1fr;
+  }
+
+  /* La media estira a la altura de la fila; aspect-ratio se desactiva
+     porque en horizontal manda la altura que le de la rejilla. */
+  .project-card--wide .project-card__media {
+    aspect-ratio: auto;
+    min-height: 22rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card__btn,
+  .project-card__btn-arrow {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   10. CONTACTO
+   ------------------------------------------------------------
+   Presentacion a la izquierda, medios a la derecha y llamada a la
+   accion al pie, todo dentro de un marco.
+
+   REUTILIZA EL LENGUAJE QUE YA TENIA EL SITIO
+     · El fondo es el del Hero: retícula de 40 px y los dos círculos
+       que se asoman por abajo. Se repite aquí para que Contacto cierre
+       el sitio con la misma textura y no parezca un añadido.
+     · El marco es la tecnica de `.photo-frame` del Hero: filete de
+       1 px en `--accent-2` y hueco asimetrico arriba y a la izquierda.
+       Por eso el area de contacto se lee como "un cuadro", igual que
+       las fotos de arriba.
+     · El indicador de disponibilidad es el `.hero-placard` del Hero:
+       mismo borde ambar al 38 %, fondo al 7 % y punto pulsante.
+     · El boton del CTA reutiliza `.btn--primary` del bloque 3.
+     · La flecha es `.contact-card__go`, no `.btn__arrow`, porque aqui
+       es un SVG de Lucide y no un caracter.
+
+   CLASES
+     .contact-frame ... el marco que envuelve todo
+     .contact-grid .. la rejilla de dos columnas
+     .contact-intro . columna de texto
+     .contact-title . el H2 de la seccion
+     .contact-lead .. la descripcion en tres lineas
+     .contact-placard / .contact-placard__dot . el indicador
+     .contact-motto .. el elemento decorativo
+     .contact-list .. <ul> de tarjetas
+     .contact-card / .contact-card--hero / --inactive
+     .contact-cta ... la barra inferior
+
+   NOTAS
+     · El degradado ambar -> naranja sale de los tokens que ya existen
+       (`--accent` y `--accent-2`), asi que no introduce ningun color
+       nuevo a la paleta.
+     · Las tarjetas llevan un radio de 4 px, muy suave, porque el resto
+       del sitio va de esquinas vivas. Si prefieres 0 px como en el
+       resto, cambia `--contact-radius` a 0.
+
+   ACCESIBILIDAD
+     · El foco lo dibuja el `:focus-visible` global del bloque 2.
+     · Los estados de hover van dentro de `hover: hover` para que en un
+       movil no se queden pegados despues de tocar.
+     · prefers-reduced-motion: ademas del neutralize global del
+       bloque 2, aqui se quitan los desplazamientos y el pulso.
 
    USADO POR: Contacto.astro.
    ============================================================ */
+
+/* --- El fondo ---
+   Copiado del Hero: la retícula de 40 px y los dos círculos que se asoman
+   por abajo. Es lo que hace que el Hero se lea como un lienzo técnico, y
+   repetirlo aquí hace que Contacto cierre el sitio con el mismo lenguaje
+   en vez de parecer un parche pegado al final.
+
+   El contenido va por encima de los círculos, igual que `.hero-inner`. */
+.contact {
+  position: relative;
+  overflow: hidden;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.contact::before,
+.contact::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.contact::before {
+  width: 520px;
+  height: 520px;
+  left: 28%;
+  bottom: -370px;
+  border: 20px solid color-mix(in srgb, #f4f6fb 3.5%, transparent);
+}
+
+.contact::after {
+  width: 420px;
+  height: 420px;
+  left: 32%;
+  bottom: -315px;
+  border: 16px solid var(--ring);
+}
+
+.contact > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- El marco ---
+   Mismo truco que `.photo-frame`: el filete rodea todo y el hueco
+   queda solo arriba y a la izquierda, como un corchete. */
+.contact-frame {
+  --contact-radius: 4px;
+  --contact-borde: var(--line);
+  position: relative;
+  padding: clamp(1.5rem, 3vw, 2.75rem) 0 0 clamp(1.5rem, 3vw, 2.75rem);
+  border: 1px solid var(--accent-2);
+}
+
+/* --- Rejilla --- */
+.contact-grid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.25rem);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 1050px) {
+  /* 0.8fr / 1.2fr: el texto se queda mas estrecho para que la linea de
+     "Hablemos" no se estire, y las tarjetas reciben el ancho que necesitan
+     para que quepan el correo y el numero de WhatsApp. */
+  .contact-grid {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+}
+
+/* --- Columna de presentacion --- */
+.contact-intro .eyebrow {
+  margin-bottom: 1.4rem;
+}
+
+/* "Hablemos" tiene que ganar por peso visual al resto de la seccion, pero
+   sin comerse la columna: de ahi el clamp mas alto que el de las demas
+   secciones, que llegan hasta 3rem. */
+.contact-title {
+  margin-bottom: 1.1rem;
+  font-size: clamp(2.6rem, 5.4vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-weight: 900;
+  color: var(--white);
+  text-wrap: balance;
+}
+
+.contact-lead {
+  max-width: 34ch;
+  color: var(--muted);
+  font-size: 1.02rem;
+}
+
+/* Indicador de disponibilidad. Copia del `.hero-placard`. */
+.contact-placard {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 1.6rem;
+  padding: 10px 15px;
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg));
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  color: var(--white);
+}
+
+.contact-placard__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--accent);
+  animation: contact-pulse 2.4s ease-out infinite;
+}
+
+@keyframes contact-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  70% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* Elemento decorativo. Sin sentido propio: es ritmo visual, y por eso el
+   punteado y el tono atenuado. */
+.contact-motto {
+  display: grid;
+  gap: 0.15rem;
+  margin-top: 2.25rem;
+  padding-top: 1.1rem;
+  border-top: 1px dashed var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.contact-motto span:last-child {
+  color: var(--accent);
+}
+
+/* --- Tarjetas --- */
 .contact-list {
   list-style: none;
   display: grid;
-  gap: 1.25rem;
+  gap: 0.85rem;
 }
 
-.contact-item {
+.contact-card {
+  --contact-borde: var(--line);
+  position: relative;
+}
+
+/* La tarjeta entera es el enlace: asi hay una sola parada de tabulacion
+   por medio y el objetivo tactil es toda la tarjeta. */
+.contact-card__link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.15rem;
+  min-height: 96px;
+  padding: 1.15rem 1.3rem;
+  border: 1px solid var(--contact-borde);
+  border-radius: var(--contact-radius);
+  background: var(--bg-raise);
+  color: var(--white);
+  text-decoration: none;
+  transition:
+    transform 250ms ease,
+    border-color 250ms ease,
+    background-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.contact-card__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--contact-borde);
+  border-radius: var(--contact-radius);
+  background: color-mix(in srgb, var(--oxblood) 22%, transparent);
+  color: var(--accent-2);
+  transition:
+    color 250ms ease,
+    border-color 250ms ease,
+    background-color 250ms ease,
+    transform 250ms ease;
+}
+
+/* El glifo de WhatsApp viene del Hero y es un SVG dibujado a mano, asi que
+   necesita los mismos trazos que Lucide para que no cante. */
+.contact-card__glyph {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.contact-card__body {
+  display: grid;
+  gap: 0.14rem;
+  min-width: 0;
+}
+
+/* Etiqueta de la plataforma. Bajada a 10 px y con el tracking muy corto
+   (0.4 px): es lo que la hace más angosta, porque el interletraje se
+   lleva la mitad del ancho. */
+.contact-card__platform {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.contact-card__value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--white);
+  /* El correo y el numero son largos; sin esto se salen en movil. */
+  overflow-wrap: anywhere;
+}
+
+.contact-card__desc {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.contact-card__go {
+  display: grid;
+  place-items: center;
+  color: var(--dim);
+  transition:
+    transform 250ms ease,
+    color 250ms ease;
+}
+
+/* La tarjeta de correo es la via principal: por eso lleva filete de acento
+   y el icono con el degradado de la paleta. */
+.contact-card--hero {
+  --contact-borde: color-mix(in srgb, var(--accent) 52%, transparent);
+}
+
+.contact-card--hero .contact-card__icon {
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 22%, transparent),
+    color-mix(in srgb, var(--accent-2) 16%, transparent)
+  );
+  color: var(--accent);
+}
+
+/* Sin numero de WhatsApp: la tarjeta sigue viendose, pero deja de ser
+   enlace y se apaga, para no prometer un `wa.me/` que no lleva a nada. */
+.contact-card--inactive .contact-card__link {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.contact-card--inactive .contact-card__go {
+  display: none;
+}
+
+/* El hover va dentro de `hover: hover` para que en movil no se quede pegado.
+   Ademas `a:hover` del bloque 2 anade subrayado, que en una tarjeta grande
+   queda mal: se anula aqui. El glow es muy tenue a proposito. */
+@media (hover: hover) {
+  .contact-card__link:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-2);
+    background: color-mix(in srgb, var(--black-cherry) 28%, var(--ink-black));
+    box-shadow: 0 6px 22px -12px color-mix(in srgb, var(--accent) 55%, transparent);
+    text-decoration: none;
+  }
+
+  .contact-card__link:hover .contact-card__icon {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+    transform: scale(1.07);
+  }
+
+  .contact-card__link:hover .contact-card__go {
+    transform: translateX(4px);
+    color: var(--accent);
+  }
+
+  /* La tarjeta principal mantiene su acento en vez de perderlo al pasar. */
+  .contact-card--hero .contact-card__link:hover {
+    border-color: var(--accent);
+  }
+}
+
+/* --- Llamada a la accion --- */
+.contact-cta {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem 1.5rem;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 1.25rem;
+  align-items: center;
+  gap: 1.1rem 1.4rem;
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding: clamp(1.15rem, 2.4vw, 1.75rem);
+  border: 1px solid var(--line);
+  border-radius: var(--contact-radius);
+  background: color-mix(in srgb, var(--black-cherry) 14%, var(--ink-black));
 }
 
-.contact-label {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.5px;
+.contact-cta__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  border-radius: var(--contact-radius);
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg));
   color: var(--accent);
-  min-width: 7rem;
 }
 
-.contact-item a {
+.contact-cta__text {
+  display: grid;
+  gap: 0.1rem;
+  margin-right: auto;
+  min-width: 0;
+}
+
+.contact-cta__lead {
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
   font-weight: 700;
+  color: var(--white);
 }
 
+.contact-cta__hint {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
 
+.contact-cta__btn {
+  flex: none;
+  /* Se separa del texto con margen propio para que el wrap en movil no lo
+     pegue al borde. */
+  margin-left: auto;
+}
+
+/* --- Movil ---
+   La rejilla ya es de una columna de serie; aqui solo se reajustan los
+   limites tactiles, se quita el marco para que no coman ancho, y el CTA
+   pasa a apilarse con el boton a lo ancho. */
+@media (max-width: 700px) {
+  .contact-frame {
+    padding: 1.25rem 1.15rem 0;
+    border: 0;
+    border-top: 1px solid var(--accent-2);
+  }
+
+  .contact-title {
+    font-size: clamp(2.35rem, 11vw, 3rem);
+  }
+
+  .contact-lead {
+    font-size: 0.98rem;
+  }
+
+  .contact-lead br {
+    display: none;
+  }
+
+  .contact-card__link {
+    gap: 0.95rem;
+    min-height: 84px;
+    padding: 1rem 1.05rem;
+  }
+
+  .contact-card__icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .contact-card__value {
+    font-size: 0.97rem;
+  }
+
+  .contact-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .contact-cta__btn {
+    width: 100%;
+    margin-left: 0;
+    justify-content: center;
+  }
+}
+
+/* En pantallas muy estrechas el marco se aprieta: sin padding lateral, o
+   el contenido de dentro se queda sin sitio. */
+@media (max-width: 420px) {
+  .contact-frame {
+    padding-inline: 1rem;
+  }
+
+  .contact-card__link {
+    padding-inline: 0.9rem;
+  }
+}
+
+/* --- prefers-reduced-motion ---
+   El bloque 2 ya deja las transiciones en 0.01ms con !important. Aqui se
+   quitan ademas los desplazamientos y el pulso, para que no haya ningun
+   cambio de posicion al pasar el raton. */
+@media (prefers-reduced-motion: reduce) {
+  .contact-placard__dot {
+    animation: none;
+    box-shadow: none;
+  }
+
+  .contact-card__link:hover,
+  .contact-card__link:hover .contact-card__icon,
+  .contact-card__link:hover .contact-card__go {
+    transform: none;
+  }
+}
 /* ============================================================
-   10. FOOTER
+   11. FOOTER
    ------------------------------------------------------------
    Pie de página con marca, navegación breve y llamada de contacto.
 

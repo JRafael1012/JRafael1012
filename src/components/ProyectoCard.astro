@@ -1,0 +1,153 @@
+---
+/**
+ * Una tarjeta de proyecto.
+ *
+ * Todos los bloques son condicionales: se dibuja solo el campo que exista en
+ * los datos. Un dato que falta **no se inventa ni se disimula**, simplemente
+ * no sale. Ver D21 en plans/plan_midegs_completo.md.
+ *
+ * El hueco de la imagen se reservation SIEMPRE, tenga foto o no: así la
+ * tarjeta mantiene su altura y no da saltos cuando se añada la captura.
+ */
+import type { Proyecto } from '../data/perfil';
+import { withBase } from '../paths';
+
+interface Props {
+  proyecto: Proyecto;
+  destacada?: boolean;
+  indice?: number;
+}
+
+const { proyecto, destacada = false, indice } = Astro.props;
+
+/**
+ * `withBase()` solo antepone el prefijo a rutas que empiezan por `/`. Sin esto,
+ * `imagen: 'img/proyectos/x.webp'` se emitiría como ruta relativa y en GitHub
+ * Pages resolvería a `usuario.github.io/img/...`, sin el `/PorfolioJR`:
+ * un 404. Se acepta las dos formas, con y sin barra inicial.
+ */
+const imagenSrc = proyecto.imagen
+  ? withBase(proyecto.imagen.startsWith('/') ? proyecto.imagen : `/${proyecto.imagen}`)
+  : undefined;
+const nombreArchivo = proyecto.titulo
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(/[̀-ͯ]/g, '')
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-|-$/g, '');
+---
+
+<article class:list={['card', 'project-card', { 'project-card--wide': destacada }]}>
+  <div class="project-card__media">
+    {
+      imagenSrc ? (
+        <img
+          class="project-card__img"
+          src={imagenSrc}
+          alt={`Captura de ${proyecto.titulo}`}
+          loading={destacada ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      ) : (
+        <div class="project-card__slot" aria-hidden="true">
+          <span class="project-card__slot-text">Espacio para la captura</span>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="project-card__body">
+    <div class="project-card__head">
+      {indice && (
+        <span class="project-card__index">
+          {String(indice).padStart(2, '0')}
+        </span>
+      )}
+      <h3 class="project-card__title">{proyecto.titulo}</h3>
+      {proyecto.estado && <p class="project-card__estado">{proyecto.estado}</p>}
+    </div>
+
+    {proyecto.descripcion && <p class="project-card__desc">{proyecto.descripcion}</p>}
+
+    {
+      proyecto.problema && (
+        <div class="project-card__block">
+          <p class="project-card__label">Problema que resuelve</p>
+          <p class="project-card__text">{proyecto.problema}</p>
+        </div>
+      )
+    }
+
+    {
+      proyecto.funcionalidades && proyecto.funcionalidades.length > 0 && (
+        <div class="project-card__block">
+          <p class="project-card__label">Funcionalidades</p>
+          <ul class="project-card__features">
+            {proyecto.funcionalidades.map((funcionalidad) => (
+              <li>{funcionalidad}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      proyecto.participacion && (
+        <div class="project-card__block">
+          <p class="project-card__label">Mi participación</p>
+          <p class="project-card__text">{proyecto.participacion}</p>
+        </div>
+      )
+    }
+
+    {
+      proyecto.stack && proyecto.stack.length > 0 && (
+        <div class="project-card__block">
+          <p class="project-card__label">Tecnologías</p>
+          <ul class="tag-list">
+            {proyecto.stack.map((tech) => (
+              <li class="tag">{tech}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      (proyecto.demo || proyecto.repositorio) && (
+        <div class="project-card__actions">
+          {proyecto.demo && (
+            <a
+              class="project-card__btn project-card__btn--primary"
+              href={proyecto.demo}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Ver proyecto
+              <span class="project-card__btn-arrow" aria-hidden="true">↗</span>
+            </a>
+          )}
+          {proyecto.repositorio && (
+            <a
+              class="project-card__btn"
+              href={proyecto.repositorio}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+              <span class="project-card__btn-arrow" aria-hidden="true">↗</span>
+            </a>
+          )}
+        </div>
+      )
+    }
+
+    {
+      !imagenSrc && (
+        <p class="project-card__hint">
+          Falta <code>public/img/proyectos/{nombreArchivo}.webp</code>
+        </p>
+      )
+    }
+  </div>
+</article>

@@ -13,11 +13,53 @@ export interface Experiencia {
   galeria?: string[];
 }
 
+/**
+ * Un proyecto de la sección "Proyectos".
+ *
+ * IMPORTANTE: todos los campos menos `titulo` son opcionales a propósito.
+ * Un dato que no se tiene no se inventa: se deja el campo fuera y la tarjeta
+ * dibuja solo lo que hay. Ver D21 en plans/plan_midegs_completo.md.
+ */
 export interface Proyecto {
+  /** Único campo obligatorio: es el nombre del proyecto. */
   titulo: string;
-  resumen: string;
-  stack: string[];
-  enlace?: { label: string; url: string };
+  /** Aparece en "Proyectos destacados", antes de la lista completa. */
+  destacado?: boolean;
+  /** Qué es, en una o dos frases. */
+  descripcion?: string;
+  /** El problema concreto que resuelve. */
+  problema?: string;
+  /** Tecnologías usadas. */
+  stack?: string[];
+  /** Qué hace, en concreto. Lista corta. */
+  funcionalidades?: string[];
+  /** Qué hiciste tú dentro del equipo. Importante en trabajos de equipo. */
+  participacion?: string;
+  /** En qué punto está: "En desarrollo", "Terminado", "En pausa"... */
+  estado?: string;
+  /** Ruta dentro de `public/`, por ejemplo `img/proyectos/finovatech.webp`. */
+  imagen?: string;
+  /** URL real del repositorio. Nunca un enlace al perfil. */
+  repositorio?: string;
+  /** URL de la demo publicada. */
+  demo?: string;
+}
+
+/** Una pregunta y su respuesta, tal como se muestran en "Sobre mí". */
+export interface Pregunta {
+  pregunta: string;
+  respuesta: string;
+  /** Etiquetas opcionales que se muestran debajo de la respuesta. */
+  intereses?: string[];
+}
+
+/** La sección "Sobre mí" completa. */
+export interface SobreMi {
+  eyebrow: string;
+  titulo: string;
+  subtitulo: string;
+  items: Pregunta[];
+  valor: { label: string; texto: string };
 }
 
 /** Una competencia o torneo en el que participaste. */
@@ -52,9 +94,28 @@ export interface Tecnologia {
 }
 
 export interface Contacto {
+  /** Nombre de la plataforma, en el formato del sitio: "GitHub", no "github". */
   label: string;
+  /** Lo que se lee en la tarjeta. No siempre es el `href`: LinkedIn muestra
+   *  el nombre de la persona, no la URL larga. */
   valor: string;
+  /** Enlace completo, listo para usar en un `href`. */
   href: string;
+  /** Segunda línea de la tarjeta: qué encuentra el usuario al pulsar. */
+  descripcion?: string;
+  /**
+   * Icono de la tarjeta.
+   *
+   * `Mail`, `Github` y `Linkedin` vienen de `lucide-astro`. `Whatsapp` es
+   * aparte: Lucide retiró los iconos de marca, así que ese glifo es el que ya
+   * usa el Hero en `.hero-social__icon--whatsapp`, reutilizado tal cual para
+   * que el WhatsApp se vea igual en las dos secciones.
+   *
+   * Si es `undefined`, la tarjeta sale sin icono.
+   */
+  icono?: 'Mail' | 'Github' | 'Linkedin' | 'Whatsapp';
+  /** Marca la tarjeta como vía principal: recibe borde y acento reforzado. */
+  destacado?: boolean;
 }
 
 /**
@@ -74,6 +135,8 @@ export interface Contacto {
  */
 export const perfil = {
   nombre: 'Jonatan Rafael Arlant Cortes',
+  /** El nombre que va en el `<h1>` del hero: corto, como se presenta uno. */
+  nombreCorto: 'Rafael Arlant',
   marca: 'Rafael.dev',
   rol: 'Estudiante de Ingeniería de Sistemas y Computación',
   subtitulo: 'Técnico en Desarrollo de Software',
@@ -82,10 +145,30 @@ export const perfil = {
     'Hola, soy Rafael. Soy estudiante de Ingeniería de Sistemas y Computación y Técnico en Desarrollo de Software. Me apasiona aprender y construir cosas nuevas. Aprendo rápido, me adapto a nuevas tecnologías y utilizo la inteligencia artificial como herramienta para investigar, potenciar mis conocimientos y mejorar mi proceso de desarrollo. Me gusta enfrentar problemas reales y convertir ideas en soluciones funcionales.',
   ciudad: 'Bogotá, Colombia',
   areas: 'Frontend · Backend · SQL · Sistemas',
-  coordenadas: ["04° 42' N", "74° 04' W"],
+  coordenadas: ["04° 42' N", "04° 04' W"],
   fotoCaption: 'APRENDER HACIENDO',
   fotoAlt: 'Fotografía de Jonatan Rafael Arlant Cortes',
   badge: 'Software',
+  /**
+   * Tecnologías principales, en la línea de puntos bajo el titular del hero.
+   * Es una lista corta y deliberada: lo primero que se lee, no el catálogo
+   * entero. El catálogo completo con logos es `stack`.
+   *
+   * Ojo: aquí aparece SQL, que sí aparece en la formación del SENA
+   * (`experiencia`) pero que el usuario quitó de la cinta de logos en D12.
+   * Son dos listas distintas con distinta función: esta es una declaración de
+   * CABECERA, la cinta es el inventario.
+   */
+  tecnologiasClave: [
+    'HTML',
+    'CSS',
+    'JavaScript',
+    'Python',
+    'SQL',
+    'PHP',
+    'Java',
+    'TypeScript',
+  ],
   cv: {
     label: 'Hoja de vida',
     // Coloca el PDF en `public/cv.pdf` o cambia esta ruta.
@@ -101,10 +184,82 @@ export const perfil = {
 
 export const nav = [
   { label: 'Stack', href: '#stack' },
+  { label: 'Sobre mí', href: '#sobre-mi' },
   { label: 'Trayectoria', href: '#trayectoria' },
+  { label: 'Destacados', href: '#destacados' },
   { label: 'Proyectos', href: '#proyectos' },
   { label: 'Contacto', href: '#contacto' },
 ];
+
+/**
+ * Sección "Sobre mí". Cinco preguntas que se pliegan y se despliegan: quien
+ * entra ve las preguntas y abre solo la que le interesa.
+ *
+ * REGLA DE ESTA SECCIÓN: no se inventa. Cada respuesta se apoya en datos que
+ * ya están en este mismo archivo —`perfil.descripcion`, `experiencia`,
+ * `competencias` y `proyectos`—, así que si cambia uno de ellos hay que
+ * actualizarla también.
+ */
+export const sobreMi: SobreMi = {
+  eyebrow: 'SOBRE MÍ',
+  titulo: 'Quién soy',
+  subtitulo: 'Seis preguntas, seis respuestas. Abre las que te interesen.',
+  /**
+   * ORDEN DE LAS PREGUNTAS: no es el que se le ocurrió primero, es un arco.
+   * Identidad → lo que resuelvo (la capacidad, antes que el papel) → la base
+   * técnica → lo que me atrae → qué quiero construir → qué busco. Quien solo
+   * lea los títulos ya se queda con el resumen.
+   */
+  items: [
+    {
+      pregunta: '¿Quién soy?',
+      /** El párrafo largo: aquí es donde de verdad se lee. */
+      respuesta: perfil.descripcion,
+    },
+    {
+      pregunta: '¿Qué problemas me gusta resolver?',
+      respuesta:
+        'Los que existen de verdad: inventarios y ventas, gestión académica y robots que deben seguir una línea de forma estable. Me gusta convertir ideas en soluciones funcionales.',
+    },
+    {
+      pregunta: '¿Qué estudio?',
+      respuesta:
+        'Técnico en Desarrollo de Software en el SENA y carrera de Ingeniería de Sistemas y Computación en la Universidad Central, con foco en bases de datos, algoritmos y arquitectura de sistemas.',
+    },
+    {
+      pregunta: '¿Qué me interesa?',
+      respuesta:
+        'Que la tecnología sirva para algo: software que una empresa necesita de verdad y proyectos que mejoran la vida de alguien concreto. La programación y la robótica son el oficio; esto es para qué lo uso.',
+      /** Etiquetas de la respuesta anterior: nombran, no repiten. */
+      intereses: [
+        'Programación',
+        'Robótica',
+        'Automatización',
+        'Inteligencia artificial',
+        'Software empresarial',
+        'Emprendimiento',
+        'Impacto social',
+        'Aprendizaje continuo',
+      ],
+    },
+    {
+      pregunta: '¿Qué quiero construir?',
+      respuesta:
+        'Empresas de software que resuelvan un problema concreto y le sirvan a más de una persona. Empiezo por lo que veo cerca: inventarios, gestión académica y formación.',
+    },
+    {
+      pregunta: '¿Qué estoy buscando?',
+      respuesta:
+        'Un lugar donde aprender de quien ya lo hace, ya sea en un trabajo o en un proyecto propio, y la posibilidad de convertir eso en algo propio.',
+    },
+  ],
+  /** La propuesta de valor: lo que aporto frente a un listado de tecnologías. */
+  valor: {
+    label: 'Mi propuesta de valor',
+    texto:
+      'Aprendo rápidamente nuevas tecnologías y utilizo herramientas de inteligencia artificial para investigar, prototipar y acelerar el desarrollo de soluciones.',
+  },
+};
 
 /**
  * Formación y actividades. Solo información verificable: aquí no van
@@ -338,35 +493,115 @@ export const stack: Tecnologia[] = [
   { nombre: 'AntiGravity', icono: 'img/logos/antigravity.svg' },
 ];
 
-/** PENDIENTE: enlaza tus repositorios reales. */
+/**
+ * PROYECTOS — PENDIENTE de datos.
+ *
+ * Solo hay dos proyectos confirmados por el usuario: el título. Todo lo demás
+ * está vacío a propósito (ver D21 en plans/plan_midegs_completo.md): la
+ * tarjeta dibuja solo los campos que existen, así que **no se inventa nada**.
+ * Los 4 proyectos de relleno que había antes se borraron porque eran
+ * inventados y sus enlaces apuntaban al perfil de GitHub, no a repositorios.
+ *
+ * PARA TERMINAR CADA TARJETA, rellena lo que falte en este array:
+ *   descripcion    qué es, en una o dos frases
+ *   problema       el problema concreto que resuelve
+ *   stack          ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL']
+ *   funcionalidades ['Registro de usuarios', 'Ingresos', ...]
+ *   participacion  qué hiciste tú dentro del equipo
+ *   estado         'En desarrollo' | 'Terminado' | 'En pausa' | ...
+ *   imagen         'img/proyectos/finovatech.webp'  (déjalo en public/)
+ *   repositorio    'https://github.com/JRafael1012/...'  URL REAL del repo
+ *   demo           'https://...'                        URL REAL publicada
+ *
+ * `destacado: true` lo sube a la sección "Proyectos destacados". El usuario
+ * pidió los 3 mejores; de momento solo hay 2 confirmados, y el tercero sigue
+ * vacante en vez de rellenarse con lo que haya.
+ */
 export const proyectos: Proyecto[] = [
   {
-    titulo: 'Sistema de inventario y ventas',
-    resumen:
-      'Aplicación web para controlar stock, registrar ventas y generar reportes. Diseñé el modelo de datos y la API que consume la interfaz.',
-    stack: ['Node.js', 'Express', 'MySQL', 'JavaScript'],
-    enlace: { label: 'Repositorio', url: 'https://github.com/JRafael1012' },
+    titulo: 'Sistema Integral de Gestión Vehicular',
+    destacado: true,
   },
   {
-    titulo: 'API REST de gestión académica',
-    resumen:
-      'Servicio con autenticación por token, validación de datos y documentación de endpoints, consumido por una interfaz web separada.',
-    stack: ['Java', 'Spring', 'MySQL', 'Postman'],
-    enlace: { label: 'Repositorio', url: 'https://github.com/JRafael1012' },
+    titulo: 'FinovaTech',
+    destacado: true,
+    // El proyecto final del SENA, según D13.
   },
   {
-    titulo: 'Robot de seguimiento de línea',
-    resumen:
-      'Proyecto de robótica en equipo: sensado, control de motores y ajuste de parámetros para que el robot siga la trayectoria de forma estable.',
-    stack: ['C++', 'Arduino', 'Sensores'],
-  },
-  {
-    titulo: 'Este portafolio',
-    resumen:
-      'Sitio estático de una sola página, en español, hecho con Astro, con carga rápida, SEO y despliegue automatizado desde GitHub.',
-    stack: ['Astro', 'TypeScript', 'CSS', 'GitHub Actions'],
+    titulo: 'RAF VESTIGIA',
+    destacado: true,
+    // PENDIENTE: confirmar el título. Viene de la lista de candidatos que
+    // escribió el usuario en el documento de contenido, no de los datos del
+    // sitio. En `experiencia` la robótica aparece como "Robótica" en
+    // Fundación Biosbot Robótica (Team Biosbot Colombia), con 6 fotos en
+    // `robotica-N.jpg`. Si el nombre correcto es otro, cámbialo aquí.
   },
 ];
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ *  DATOS CONFIGURABLES — CONTACTO
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ *  Este bloque es el ÚNICO sitio donde se tocan las coordenadas de contacto.
+ *  Todo lo demás (las tarjetas, el CTA, el `mailto:`) se construye a partir de
+ *  aquí, así que no hay URLs repetidas por el código.
+ *
+ *  · ¿Cambiaste tu número de WhatsApp?  → `whatsappNumber`, línea de abajo.
+ *  · ¿Cambiaste tu LinkedIn?             → `linkedinUrl`, línea de abajo.
+ *  · ¿Cambiaste tu correo?               → `email`, línea de abajo.
+ *
+ *  ── WhatsApp ──────────────────────────────────────────────────────────────
+ *  `whatsappNumber` es SOLO el número, en formato internacional y SIN `+`,
+ *  sin espacios, guiones ni paréntesis. Ejemplo: `573238176273`.
+ *
+ *  El número no se inventa: es el que ya usaba el Hero en sus redes. Si ya no
+ *  es el tuyo, cámbialo aquí y se actualiza la tarjeta de Contacto. La tarjeta
+ *  del Hero tiene su propia copia hardcodeada en `Hero.astro`, que no se toca
+ *  aquí porque esa sección queda fuera de este trabajo.
+ */
+export const datosContacto = {
+  email: 'rafaelarlant1012@gmail.com',
+  githubUrl: 'https://github.com/JRafael1012',
+  githubUsername: '@JRafael1012',
+  linkedinUrl: 'https://www.linkedin.com/in/rafael-arlant-cortes-b735412b3/',
+  whatsappNumber: '573238176273',
+  /** Texto que WhatsApp abre ya escrito. Se codifica solo, no a mano. */
+  whatsappMessage:
+    'Hola Rafael, vi tu portafolio y me gustaría hablar contigo sobre un proyecto.',
+} as const;
+
+/** `true` si hay número de WhatsApp con el que construir el enlace. */
+export const whatsappConfigurado = datosContacto.whatsappNumber.length > 0;
+
+/**
+ * Enlace de WhatsApp con el mensaje ya codificado, o `null` si falta el número.
+ * Se construye con `encodeURIComponent` porque el mensaje lleva acentos y signos
+ * de interrogación, que romperían la URL si se escribieran a mano.
+ */
+export const whatsappUrl = whatsappConfigurado
+  ? `https://wa.me/${datosContacto.whatsappNumber}?text=${encodeURIComponent(
+      datosContacto.whatsappMessage,
+    )}`
+  : null;
+
+/** Enlace `mailto:` del correo, listo para el CTA. */
+export const correoUrl = `mailto:${datosContacto.email}`;
+
+/**
+ * El número tal como se lee en la tarjeta, que es distinto de como se usa en
+ * la URL: aquí sí lleva `+` y espacios, porque es para ojos humanos. Un número
+ * colombiano (57 + 10 dígitos) sale como `+57 323 817 6273`; cualquier otro
+ * formato cae en `+573...` sin inventar agrupamientos.
+ */
+export const whatsappDisplay = (() => {
+  const n = datosContacto.whatsappNumber;
+  if (!n) return 'Sin número configurado';
+  if (/^57\d{10}$/.test(n)) {
+    return `+57 ${n.slice(2, 5)} ${n.slice(5, 8)} ${n.slice(8)}`;
+  }
+  return `+${n}`;
+})();
 
 /**
  * PENDIENTE: hay un segundo correo, jonatanarlantcortes14@gmail.com, que
@@ -375,18 +610,32 @@ export const proyectos: Proyecto[] = [
 export const contacto: Contacto[] = [
   {
     label: 'Correo',
-    valor: 'rafaelarlant1012@gmail.com',
-    href: 'mailto:rafaelarlant1012@gmail.com',
+    valor: datosContacto.email,
+    href: correoUrl,
+    descripcion: 'La forma más rápida de contactarme.',
+    icono: 'Mail',
+    destacado: true,
   },
   {
     label: 'GitHub',
-    valor: 'JRafael1012',
-    href: 'https://github.com/JRafael1012',
+    valor: datosContacto.githubUsername,
+    href: datosContacto.githubUrl,
+    descripcion: 'Mis proyectos y código.',
+    icono: 'Github',
   },
   {
     label: 'LinkedIn',
-    valor: 'linkedin.com/in/rafael-arlant-cortes-b735412b3',
-    href: 'https://www.linkedin.com/in/rafael-arlant-cortes-b735412b3/',
+    valor: 'Rafael Arlant',
+    href: datosContacto.linkedinUrl,
+    descripcion: 'Perfil profesional.',
+    icono: 'Linkedin',
+  },
+  {
+    label: 'WhatsApp',
+    valor: whatsappDisplay,
+    href: whatsappUrl ?? '#contacto',
+    descripcion: 'Hablemos directamente.',
+    icono: 'Whatsapp',
   },
 ];
 
